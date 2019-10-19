@@ -1,6 +1,5 @@
 const {spawn} = require('child_process');
-const winston = require('winston');
-const expressWinston = require('express-winston');
+const expressBunyanLogger = require('express-bunyan-logger');
 const axios = require('axios');
 
 // server.js
@@ -8,48 +7,12 @@ const axios = require('axios');
 const express = require('express');
 const app = express();
 
-const dev = process.env.NODE_ENV !== 'production';
-
-const prettyJson = winston.format.printf((info) => {
-  if (info.message.constructor === Object) {
-    info.message = JSON.stringify(info.message, null, 4);
-  }
-
-  return `${info.timestamp} ${info.level}: ${info.message}`;
-});
-
-const screamLevel = winston.format((info, opts) => {
-  if (opts.yell) {
-    info.level = info.level.toUpperCase();
-  } else {
-    info.level = info.level.toLowerCase();
-  }
-
-  return info;
-});
-
-const alignedWithColorsAndTime = winston.format.combine(
-    screamLevel({yell: true}),
-    winston.format.colorize(),
-    winston.format.timestamp(),
-    prettyJson
-);
-
-const winstonInstance = winston.createLogger({
-  exitOnError: false,
-  transports: [
-    new winston.transports.Console({
-      format: (dev ? alignedWithColorsAndTime : winston.format.json()),
-    }),
-  ],
-});
-
 const wrap = (fn) => (...args) => fn(...args).catch(args[2]);
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.set('trust proxy', 1); // trust first proxy
 
-app.use(expressWinston.logger({winstonInstance}));
+app.use(expressBunyanLogger());
 
 app.get('/', function(req, res) {
   res.render('pages/index');
@@ -78,7 +41,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
       '-',
       '-',
     ];
-    winstonInstance.info(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
+    req.log.debug(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
     const p = spawn(
         command, args, {
           encoding: 'utf8',
@@ -93,7 +56,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
     p.stderr.on('data', (data) => stderr += data);
     p.stderr.on('end', () => {
       if (stderr.trim()) {
-        winstonInstance.error(stderr.trim());
+        req.log.error(stderr.trim());
       }
     });
     p.stdout.pipe(res);
@@ -102,7 +65,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
   });
 }));
 
-app.use(expressWinston.errorLogger({winstonInstance}));
+app.use(expressBunyanLogger.errorLogger());
 
 app.listen(3000);
 console.log('3000 is the magic port');

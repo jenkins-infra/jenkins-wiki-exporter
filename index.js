@@ -66,24 +66,33 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
     return;
   }
   await new Promise(function(resolve, reject) {
+    const command = 'pandoc';
+    const args = [
+      '-f',
+      'html',
+      '-t',
+      'markdown_github+blank_before_header+link_attributes',
+      '--atx-headers',
+      '-o',
+      '-',
+      '-',
+    ];
+    winstonInstance.info(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
     const p = spawn(
-        'pandoc',
-        [
-          '-f',
-          'html',
-          '-t',
-          'markdown_github+blank_before_header+link_attributes',
-          '--atx-headers',
-          '-o',
-          '-',
-          '-',
-        ],
-        {stdio: ['pipe', 'pipe', process.stderr]}
+        command, args, {
+          env: {...process.env, LANG: 'en_US.UTF-8', LC_CTYPE: 'en_US.UTF-8'},
+          stdio: ['pipe', 'pipe', 'pipe'],
+        }
     );
     p.once('error', reject);
-    p.once('exit', (code, signal) => {
-      winstonInstance.info('p1 done', {code, signal});
-      resolve();
+    p.once('exit', (code, signal) => resolve());
+
+    let stderr = '';
+    p.stderr.on('data', (data) => stderr += data);
+    p.stderr.on('end', () => {
+      if (stderr.trim()) {
+        winstonInstance.error(stderr.trim());
+      }
     });
     p.stdout.pipe(res);
     p.stdin.write(resp.data.wiki.content);

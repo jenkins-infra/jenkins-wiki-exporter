@@ -65,6 +65,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
     res.send('Not a wiki page');
     return;
   }
+  res.type('text/plain; charset=utf-8');
   await new Promise(function(resolve, reject) {
     const command = 'pandoc';
     const args = [
@@ -80,6 +81,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
     winstonInstance.info(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
     const p = spawn(
         command, args, {
+          encoding: 'utf8',
           env: {...process.env, LANG: 'en_US.UTF-8', LC_CTYPE: 'en_US.UTF-8'},
           stdio: ['pipe', 'pipe', 'pipe'],
         }

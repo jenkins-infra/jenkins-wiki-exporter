@@ -47,15 +47,18 @@ const winstonInstance = winston.createLogger({
 const wrap = (fn) => (...args) => fn(...args).catch(args[2]);
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+app.set('trust proxy', 1); // trust first proxy
 
 app.use(expressWinston.logger({winstonInstance}));
 
-// index page
 app.get('/', function(req, res) {
   res.render('pages/index');
 });
 
-// about page
+app.get('/healthcheck', function healthcheck(req, res) {
+  res.send('OK');
+});
+
 app.get('/plugin/:plugin', wrap(async function(req, res, next) {
   const resp = await axios.get('https://plugins.jenkins.io/api/plugin/' + req.params.plugin);
   if (!resp.data.wiki.url.includes('wiki.jenkins-ci.org')) {
@@ -87,6 +90,8 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
     p.stdin.end();
   });
 }));
+
+app.use(expressWinston.errorLogger({winstonInstance}));
 
 app.listen(3000);
 console.log('3000 is the magic port');

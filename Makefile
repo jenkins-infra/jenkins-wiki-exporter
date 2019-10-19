@@ -1,10 +1,18 @@
 .DEFAULT_GOAL := help
+DOCKER_PREFIX ?= halkeye
+DOCKER_IMAGE ?= jenkins-plugin-md
 
 dev: ## run the dev server
-	 npm run dev
+	npm run dev
 
-docker: ## build the docker version
-	docker build -t halkeye/confluence-to-md-web .
+build: ## build the docker version
+	docker build -t $(DOCKER_PREFIX)/$(DOCKER_IMAGE) .
+
+run: ## run the latest docker build
+	docker run -it --name $(DOCKER_IMAGE) -p 3000:3000 -t $(DOCKER_PREFIX)/$(DOCKER_IMAGE)
+
+push: ## push to docker registry
+	docker push $(DOCKER_PREFIX)/$(DOCKER_IMAGE)
 
 release: ## bump the version and push a release
 	np

@@ -14,9 +14,7 @@ app.set('trust proxy', 1); // trust first proxy
 
 app.use(expressBunyanLogger());
 
-app.get('/', function(req, res) {
-  res.render('pages/index');
-});
+app.use(express.static('public'));
 
 app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');

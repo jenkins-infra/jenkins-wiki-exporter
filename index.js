@@ -81,7 +81,7 @@ function getFormatType(type) {
   }
 }
 
-app.get('/plugin/:plugin([^\\.]+)\.?:format', wrap(async (req, res, next) => {
+app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
   if (!req.params.format) {
     req.params.format = 'md';
   }

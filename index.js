@@ -20,14 +20,16 @@ app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');
 });
 
-app.get('/plugin/:plugin', wrap(async function(req, res, next) {
-  const resp = await axios.get('https://plugins.jenkins.io/api/plugin/' + req.params.plugin);
-  if (!resp.data.wiki.url.includes('wiki.jenkins-ci.org')) {
-    res.send('Not a wiki page');
-    return;
-  }
-  res.type('text/plain; charset=utf-8');
-  await new Promise(function(resolve, reject) {
+/**
+ * Do the main conversion
+ *
+ * @param {Logger} log Logger
+ * @param {str} body The body to be converted
+ * @param {str} format What format to output as
+ * @return {string} converted string
+ */
+async function convertBody(log, body, format) {
+  return new Promise(function(resolve, reject) {
     const command = 'pandoc';
     const args = [
       '-f',
@@ -39,7 +41,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
       '-',
       '-',
     ];
-    req.log.debug(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
+    log.debug(`${command} ${args.map((a) => `"${a}"`).join(' ')}`);
     const p = spawn(
         command, args, {
           encoding: 'utf8',
@@ -48,19 +50,56 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
         }
     );
     p.once('error', reject);
-    p.once('exit', (code, signal) => resolve());
+    p.once('exit', (code, signal) => {
+      resolve({
+        stderr,
+        stdout,
+      });
+    });
 
     let stderr = '';
     p.stderr.on('data', (data) => stderr += data);
     p.stderr.on('end', () => {
       if (stderr.trim()) {
-        req.log.error(stderr.trim());
+        log.error(stderr.trim());
       }
     });
-    p.stdout.pipe(res);
-    p.stdin.write(resp.data.wiki.content);
+    let stdout = '';
+    p.stdout.on('data', (data) => stdout += data);
+    p.stdin.write(body);
     p.stdin.end();
   });
+}
+/**
+ * Which pandoc format do we want to output as
+ * @param {string} type Which file extension do we want
+ * @return {string}
+ */
+function getFormatType(type) {
+  if (type === 'md') {
+    return 'markdown_github';
+  }
+}
+
+app.get('/plugin/:plugin([^\\.]+)\.?:format', wrap(async (req, res, next) => {
+  if (!req.params.format) {
+    req.params.format = 'md';
+  }
+  const formats = req.params.format.split('.');
+  const outputType = getFormatType(formats[0]);
+
+  const resp = await axios.get('https://plugins.jenkins.io/api/plugin/' + req.params.plugin);
+  if (!resp.data.wiki.url.includes('wiki.jenkins-ci.org')) {
+    res.send('Not a wiki page');
+    return;
+  }
+  res.type('text/plain; charset=utf-8');
+  const {stdout} = await convertBody(
+      req.log,
+      resp.data.wiki.content,
+      outputType
+  );
+  res.send(stdout);
 }));
 
 app.use(expressBunyanLogger.errorLogger());

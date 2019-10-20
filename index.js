@@ -33,7 +33,7 @@ app.get('/plugin/:plugin', wrap(async function(req, res, next) {
       '-f',
       'html',
       '-t',
-      'markdown_github+blank_before_header+link_attributes',
+      'markdown_github-raw_html+blank_before_header+link_attributes',
       '--atx-headers',
       '-o',
       '-',

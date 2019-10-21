@@ -67,12 +67,18 @@ async function requestPluginHandler(req, res) {
         return val;
       }
 
-      const filename = `docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
-      files.push({
-        content: await getUrlAsStream(grab),
-        filename: filename,
-      });
-      return val.replace(grab, filename);
+      try {
+        const filename = `docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
+        files.push({
+          content: await getUrlAsStream(grab),
+          filename: filename,
+        });
+        return val.replace(grab, filename);
+      } catch (e) {
+        // FIXME - sentry.captureException(e);
+        req.log.error(e);
+        return val;
+      }
     });
     files.push({
       content: Buffer.from(content),

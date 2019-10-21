@@ -4,6 +4,8 @@ const {basename} = require('path');
 const {parse: urlParse} = require('url');
 const {
   convertBody,
+  findImages,
+  decodeEntities,
   getFormatType,
   getPluginData,
   getUrlAsStream,
@@ -29,6 +31,7 @@ app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');
 });
 
+// from https://gist.github.com/dperini/729294
 /**
  * Handles the /plugin/ action
  * @param {request} req
@@ -57,9 +60,14 @@ async function requestPluginHandler(req, res) {
       zlib: {level: 9}, // Sets the compression level.
     });
     const files = [];
-    const imgRe = /\!\[\]\((.*)\)/g;
-    const content = await replaceAsync(stdout, imgRe, async (val, grab) => {
-      const filename = `docs/images/${basename(urlParse(grab).pathname)}`;
+    const images = findImages(pluginData.wiki.content).map(decodeEntities);
+    const urlRE = new RegExp('(' + images.map((i) => i.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|') + ')', 'gi');
+    const content = await replaceAsync(stdout, urlRE, async function(val, grab) {
+      if (!images.includes(val)) {
+        return val;
+      }
+
+      const filename = `docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
       files.push({
         content: await getUrlAsStream(grab),
         filename: filename,

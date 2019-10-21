@@ -1,5 +1,7 @@
 /* eslint-env node, jest */
 const sut = require('./index.js');
+const MockExpressRequest = require('mock-express-request');
+const MockExpressResponse = require('mock-express-response');
 
 jest.mock('./utils.js', () => ({
   ...require.requireActual('./utils.js'),
@@ -45,6 +47,21 @@ describe('/plugin/:pluginName', function() {
 
     await sut.requestPluginHandler(req, res);
     expect(res.send.mock.calls).toMatchSnapshot();
+  });
+  it('markdown.zip should return markdown and images in zip', async () => {
+    const req = new MockExpressRequest({
+      log: {
+        debug: jest.fn(),
+      },
+      params: {
+        plugin: 'html5-notifier-plugin',
+        format: 'md.zip',
+      },
+    });
+    const res = new MockExpressResponse({ });
+
+    await sut.requestPluginHandler(req, res);
+    expect(res._getString()).toMatchSnapshot();
   });
   it('markdown should return markdown', async () => {
     const req = {

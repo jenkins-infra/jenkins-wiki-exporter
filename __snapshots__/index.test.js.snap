@@ -238,3 +238,5 @@ HTML5 notifier plugin breaks Jenkins with CSRF protection
   ],
 ]
 `;
+
+exports[`/plugin/:pluginName markdown.zip should return markdown and images in zip 1`] = `""`;

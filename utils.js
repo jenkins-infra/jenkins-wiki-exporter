@@ -2,10 +2,72 @@ const bunyan = require('bunyan');
 const axios = require('axios');
 const {basename} = require('path');
 const {spawn, execFile} = require('child_process');
+const DomParser = require('dom-parser');
 
 const logger = bunyan.createLogger({
   name: basename(process.argv[0]) + ':utils',
 });
+
+
+/**
+ * decodeEntities - https://stackoverflow.com/a/39243641
+ * @param {string} encodedString string to decode
+ * @return {string} the decoded one
+*/
+function decodeEntities(encodedString) {
+  const htmlEntities = {
+    nbsp: ' ',
+    cent: '¢',
+    pound: '£',
+    yen: '¥',
+    euro: '€',
+    copy: '©',
+    reg: '®',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    amp: '&',
+    apos: '\'',
+  };
+
+  return encodedString.replace(/\&([^;]+);/g, function(entity, entityCode) {
+    let match;
+
+    if (entityCode in htmlEntities) {
+      return htmlEntities[entityCode];
+      // eslint-disable-next-line no-cond-assign
+    } else if (match = entityCode.match(/^#x([\da-fA-F]+)$/)) {
+      return String.fromCharCode(parseInt(match[1], 16));
+      // eslint-disable-next-line no-cond-assign
+    } else if (match = entityCode.match(/^#(\d+)$/)) {
+      return String.fromCharCode(~~match[1]);
+    } else {
+      return entity;
+    }
+  });
+}
+
+/**
+ * Find those images
+ *
+ * @param {string} body html content to find images in
+ * @return {array} array of string urls
+ */
+function findImages(body) {
+  const domParser = new DomParser();
+  const dom = domParser.parseFromString(body);
+  const images = dom.getElementsByTagName('img');
+  const ret = images.map((image) => {
+    return [
+      (image.attributes.find((attr) => attr.name === 'data-image-src') || {}).value,
+      (image.attributes.find((attr) => attr.name === 'src') || {}).value,
+    ];
+  })
+      .flat()
+      .map((url) => url.startsWith('http') ? url : `https://wiki.jenkins.io${url}`)
+      .filter(Boolean);
+  return ret;
+}
 
 /**
  * Standard string replace function that allows async functions
@@ -149,6 +211,8 @@ function recordPandoc() {
 
 module.exports = {
   convertBody,
+  decodeEntities,
+  findImages,
   getFormatType,
   getPluginData,
   getUrlAsStream,

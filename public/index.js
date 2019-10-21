@@ -12,6 +12,12 @@ const onsubmit = function(ev) {
     fetch('./plugin/' + pluginName + type, {
       responseType: 'blob',
     })
+        .then(function(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response;
+        })
         .then((response) => response.blob())
         .then((blob) => {
           $markdown.value = 'Saving...';
@@ -19,6 +25,12 @@ const onsubmit = function(ev) {
         });
   } else {
     fetch('./plugin/' + pluginName + type)
+        .then(function(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response;
+        })
         .then((resp) => resp.text())
         .then((body) => $markdown.value = body)
         .catch((err) => $markdown.value = 'Error: ' + err.toString());

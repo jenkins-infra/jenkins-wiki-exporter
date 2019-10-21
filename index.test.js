@@ -1,14 +1,15 @@
 /* eslint-env node, jest */
-const fs = require('fs').promises;
-
 const sut = require('./index.js');
 
+jest.mock('./utils.js', () => ({
+  ...require.requireActual('./utils.js'),
+  getPluginData: (pluginName) => {
+    return require('fs').promises.readFile(`__testData/${pluginName}.json`)
+        .then((buf) => JSON.parse(buf.toString()));
+  },
+}));
+
 describe('/plugin/:pluginName', function() {
-  beforeEach(() => {
-    sut.getPluginData = jest.fn(
-        (pluginName) => fs.readFile(`__testData/${pluginName}.json`)
-    );
-  });
   it('handle the basics', async () => {
     const req = {
       log: {

@@ -7,10 +7,22 @@ const onsubmit = function(ev) {
   const pluginName = $pluginName.value;
 
   $markdown.value = 'Pending....';
-  fetch('./plugin/' + pluginName)
-      .then((resp) => resp.text())
-      .then((body) => $markdown.value = body)
-      .catch((err) => $markdown.value = 'Error: ' + err.toString());
+  const type = document.querySelector('#format:checked').value;
+  if (type.endsWith('.zip')) {
+    fetch('./plugin/' + pluginName + type, {
+      responseType: 'blob',
+    })
+        .then((response) => response.blob())
+        .then((blob) => {
+          $markdown.value = 'Saving...';
+          saveAs(blob, pluginName + type);
+        });
+  } else {
+    fetch('./plugin/' + pluginName + type)
+        .then((resp) => resp.text())
+        .then((body) => $markdown.value = body)
+        .catch((err) => $markdown.value = 'Error: ' + err.toString());
+  }
 };
 
 $pluginName.addEventListener('keydown', function(e) {

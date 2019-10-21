@@ -1,5 +1,6 @@
-const {spawn} = require('child_process');
+const {spawn, execFile} = require('child_process');
 const expressBunyanLogger = require('express-bunyan-logger');
+const bunyan = require('bunyan');
 const axios = require('axios');
 const archiver = require('archiver');
 const {basename} = require('path');
@@ -167,5 +168,31 @@ app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
 
 app.use(expressBunyanLogger.errorLogger());
 
-app.listen(3000);
-console.log('3000 is the magic port');
+/** outputPandocVersion
+ * @return {promise}
+ */
+function recordPandoc() {
+  const logger = bunyan.createLogger({name: basename(process.argv[0])});
+  return new Promise(function(resolve, reject) {
+    execFile(
+        'pandoc',
+        ['--version'], {
+          encoding: 'utf8',
+          env: {...process.env, LANG: 'en_US.UTF-8', LC_CTYPE: 'en_US.UTF-8'},
+        },
+        (error, stdout, stderr) => {
+          if (error) {
+            logger.error(stderr);
+            reject(error);
+            return;
+          }
+          logger.info(stdout + stderr);
+          resolve();
+        }
+    );
+  });
+}
+recordPandoc().then(() => {
+  app.listen(3000);
+  console.log('3000 is the magic port');
+}).catch(console.error);

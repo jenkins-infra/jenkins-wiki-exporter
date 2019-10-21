@@ -8,33 +8,29 @@ const onsubmit = function(ev) {
 
   $markdown.value = 'Pending....';
   const type = document.querySelector('#format:checked').value;
-  if (type.endsWith('.zip')) {
-    fetch('./plugin/' + pluginName + type, {
-      responseType: 'blob',
-    })
-        .then(function(response) {
-          if (!response.ok) {
-            throw Error(response.statusText);
-          }
-          return response;
-        })
-        .then((response) => response.blob())
-        .then((blob) => {
-          $markdown.value = 'Saving...';
-          saveAs(blob, pluginName + type);
-        });
-  } else {
-    fetch('./plugin/' + pluginName + type)
-        .then(function(response) {
-          if (!response.ok) {
-            throw Error(response.statusText);
-          }
-          return response;
-        })
-        .then((resp) => resp.text())
-        .then((body) => $markdown.value = body)
-        .catch((err) => $markdown.value = 'Error: ' + err.toString());
-  }
+  fetch('./plugin/' + pluginName + type, {
+    responseType: 'blob',
+  })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw Error(text || response.statusText);
+          });
+        }
+        return response;
+      })
+      .then((response) => {
+        if (response.headers.get('content-type').includes('/zip')) {
+          return response.blob()
+              .then((blob) => {
+                $markdown.value = 'Saving...';
+                saveAs(blob, pluginName + type);
+              });
+        } else {
+          return response.text().then((body) => $markdown.value = body);
+        }
+      })
+      .catch((err) => $markdown.value = 'Error: ' + err.toString());
 };
 
 $pluginName.addEventListener('keydown', function(e) {

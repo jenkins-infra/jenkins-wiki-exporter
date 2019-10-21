@@ -45,7 +45,7 @@ async function requestPluginHandler(req, res) {
   const outputType = getFormatType(formats[0]);
 
   const pluginData = await getPluginData(req.params.plugin);
-  if (!pluginData.wiki.url.includes('wiki.jenkins-ci.org')) {
+  if (!pluginData.wiki.url.includes('wiki.jenkins-ci.org') && !pluginData.wiki.url.includes('wiki.jenkins.io')) {
     res.send('Not a wiki page');
     return;
   }

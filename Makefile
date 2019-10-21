@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 DOCKER_PREFIX ?= halkeye
-DOCKER_IMAGE ?= jenkins-plugin-md
+DOCKER_IMAGE ?= jenkins-wiki-exporter
 
 dev: ## run the dev server
 	npm run dev

@@ -39,7 +39,7 @@ async function convertBody(log, body, format) {
       '-f',
       'html',
       '-t',
-      'markdown_github-raw_html+blank_before_header+link_attributes',
+      format+'-raw_html+blank_before_header+link_attributes',
       '--atx-headers',
       '-o',
       '-',
@@ -83,6 +83,10 @@ function getFormatType(type) {
   if (type === 'md') {
     return 'markdown_github';
   }
+  if (type === 'adoc') {
+    return 'asciidoc';
+  }
+  throw new Error('Unknown format: ' + type);
 }
 
 
@@ -106,22 +110,54 @@ async function replaceAsync(str, regex, asyncFn) {
   return str.replace(regex, () => data.shift());
 }
 
-app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
+/**
+ * Grabs the data from plugins.jenkins.io
+ * @param {string} pluginName
+ * @return {object}
+ */
+async function getPluginData(pluginName) {
+  if (!pluginName) {
+    throw new Error('plugin name is required');
+  }
+
+  return axios.get('https://plugins.jenkins.io/api/plugin/' + pluginName)
+      .then((resp) => resp.data);
+}
+
+/**
+ * Grabs the data from plugins.jenkins.io
+ * @param {string} url
+ * @return {Stream}
+ */
+async function getUrlAsStream(url) {
+  if (!url) {
+    throw new Error('url');
+  }
+
+  return axios.get(url, {responseType: 'stream'})
+      .then((resp) => resp.data);
+}
+/**
+ * Handles the /plugin/ action
+ * @param {request} req
+ * @param {response} res
+ */
+async function requestPluginHandler(req, res) {
   if (!req.params.format) {
     req.params.format = 'md';
   }
   const formats = req.params.format.split('.');
   const outputType = getFormatType(formats[0]);
 
-  const resp = await axios.get('https://plugins.jenkins.io/api/plugin/' + req.params.plugin);
-  if (!resp.data.wiki.url.includes('wiki.jenkins-ci.org')) {
+  const pluginData = await getPluginData(req.params.plugin);
+  if (!pluginData.wiki.url.includes('wiki.jenkins-ci.org')) {
     res.send('Not a wiki page');
     return;
   }
   res.type('text/plain; charset=utf-8');
   const {stdout} = await convertBody(
       req.log,
-      resp.data.wiki.content,
+      pluginData.wiki.content,
       outputType
   );
   if (formats[1] === 'zip') {
@@ -133,12 +169,7 @@ app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
     const content = await replaceAsync(stdout, imgRe, async (val, grab) => {
       const filename = `docs/images/${basename(urlParse(grab).pathname)}`;
       files.push({
-        content: await axios.get(
-            grab,
-            {
-              responseType: 'stream',
-            }
-        ).then((response) => response.data),
+        content: await getUrlAsStream(grab),
         filename: filename,
       });
       return val.replace(grab, filename);
@@ -164,7 +195,8 @@ app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
   } else {
     res.send(stdout);
   }
-}));
+}
+app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(requestPluginHandler));
 
 app.use(expressBunyanLogger.errorLogger());
 
@@ -192,7 +224,14 @@ function recordPandoc() {
     );
   });
 }
-recordPandoc().then(() => {
-  app.listen(3000);
-  console.log('3000 is the magic port');
-}).catch(console.error);
+
+if (typeof require !== 'undefined' && require.main === module) {
+  recordPandoc().then(() => {
+    app.listen(3000);
+    console.log('3000 is the magic port');
+  }).catch(console.error);
+} else {
+  module.exports = {
+    requestPluginHandler,
+  };
+}

@@ -33,3 +33,4 @@ $pluginName.addEventListener('keydown', function(e) {
   }
 });
 $convertButton.addEventListener('click', onsubmit);
+$markdown.value = '';

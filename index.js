@@ -1,6 +1,9 @@
 const {spawn} = require('child_process');
 const expressBunyanLogger = require('express-bunyan-logger');
 const axios = require('axios');
+const archiver = require('archiver');
+const {basename} = require('path');
+const {parse: urlParse} = require('url');
 
 // server.js
 // load the things we need
@@ -81,6 +84,27 @@ function getFormatType(type) {
   }
 }
 
+
+/**
+ * Standard string replace function that allows async functions
+ *
+ * https://stackoverflow.com/a/48032528
+ *
+ * @param {string} str string to be searched
+ * @param {string} regex regex to search
+ * @param {function} asyncFn to do the replace
+ * @return {string} the new string
+ */
+async function replaceAsync(str, regex, asyncFn) {
+  const promises = [];
+  str.replace(regex, (match, ...args) => {
+    const promise = asyncFn(match, ...args);
+    promises.push(promise);
+  });
+  const data = await Promise.all(promises);
+  return str.replace(regex, () => data.shift());
+}
+
 app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
   if (!req.params.format) {
     req.params.format = 'md';
@@ -99,7 +123,46 @@ app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(async (req, res, next) => {
       resp.data.wiki.content,
       outputType
   );
-  res.send(stdout);
+  if (formats[1] === 'zip') {
+    const archive = archiver('zip', {
+      zlib: {level: 9}, // Sets the compression level.
+    });
+    const files = [];
+    const imgRe = /\!\[\]\((.*)\)/g;
+    const content = await replaceAsync(stdout, imgRe, async (val, grab) => {
+      const filename = `docs/images/${basename(urlParse(grab).pathname)}`;
+      files.push({
+        content: await axios.get(
+            grab,
+            {
+              responseType: 'stream',
+            }
+        ).then((response) => response.data),
+        filename: filename,
+      });
+      return val.replace(grab, filename);
+    });
+    files.push({
+      content: Buffer.from(content),
+      filename: 'README.' + formats[0],
+    });
+    for (const file of files) {
+      archive.append(file.content, {name: file.filename});
+    }
+    archive.on('error', function(err) {
+      throw err;
+    });
+    archive.on('warning', function(err) {
+      throw err;
+    });
+    res.attachment(`${req.params.plugin}.zip`).type('zip');
+    archive.on('end', () => res.end()); // end response when archive stream ends
+    archive.pipe(res);
+    archive.finalize();
+    return;
+  } else {
+    res.send(stdout);
+  }
 }));
 
 app.use(expressBunyanLogger.errorLogger());

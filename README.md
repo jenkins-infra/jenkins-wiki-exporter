@@ -2,7 +2,7 @@ Jenkins Wiki Exporter
 =====================
 
 Service to convert jenkins plugin Wiki format to github Markdown or Asciidoc.
-Currently it is hosted on https://jenkins-wiki-md.g4v.dev/
+Currently it is hosted on https://jenkins-wiki-exporter.g4v.dev/
 
 ## Usage
 

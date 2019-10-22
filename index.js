@@ -86,9 +86,8 @@ async function requestPluginHandler(req, res) {
 async function requestConfluencePageHandler(req, res) {
   const {extension, archiveFormat} = handleParams(req);
 
-  const pluginData = await getPluginData(req.params.plugin);
-  checkUrl(validWikiDomains, pluginData.wiki.url);
-  return processContent(req, res, pluginData.wiki.content, extension, archiveFormat);
+  const content = await getConfluenceContent(req.params.plugin);
+  return processContent(req, res, content, extension, archiveFormat);
 }
 
 /**
@@ -108,8 +107,6 @@ async function requestConfluenceUrlHandler(req, res) {
   checkUrl(validWikiDomains, url);
   const pageId = await getConfluencePageId(url);
   const content = await getConfluenceContent(pageId);
-
-  console.log({url, extension, archiveFormat, pageId});
 
   return processContent(req, res, content, extension, archiveFormat);
 }

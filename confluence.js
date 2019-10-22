@@ -49,7 +49,7 @@ async function getConfluenceContent(pageId) {
   logger.info('getConfluenceContent: looking up ' + pageId);
 
   const body = await confluence.getContentByIdPromise(pageId);
-  return body.body;
+  return body.body.value;
 }
 
 module.exports = {

@@ -1,16 +1,22 @@
+/* eslint-env browser */
 const $markdown = document.getElementById('markdown');
 const $pluginName = document.getElementById('pluginName');
 const $convertButton = document.getElementById('convertButton');
 
 const onsubmit = function(ev) {
   ev.preventDefault();
-  const pluginName = $pluginName.value;
-
   $markdown.value = 'Pending....';
   const type = document.querySelector('#format:checked').value;
-  fetch('./plugin/' + pluginName + type, {
-    responseType: 'blob',
-  })
+  const pluginName = $pluginName.value;
+
+  let url = './plugin/' + encodeURIComponent(pluginName) + type;
+  if (pluginName.match(/^[0-9]+$/i)) {
+    url = '/confluence-page-id/' + encodeURIComponent(pluginName) + type;
+  } else if (pluginName.match(/^https?\:\/\//)) {
+    url = '/confluence-url/' + encodeURIComponent(pluginName) + type;
+  }
+
+  fetch(url, {responseType: 'blob'})
       .then(function(response) {
         if (!response.ok) {
           return response.text().then((text) => {

@@ -1,17 +1,34 @@
+/* eslint-env node */
 const expressBunyanLogger = require('express-bunyan-logger');
 const archiver = require('archiver');
 const {basename} = require('path');
 const {parse: urlParse} = require('url');
 const {
+  checkUrl,
   convertBody,
-  findImages,
   decodeEntities,
+  findImages,
   getFormatType,
   getPluginData,
   getUrlAsStream,
   recordPandoc,
   replaceAsync,
 } = require('./utils.js');
+const {
+  getConfluencePageId,
+  getConfluenceContent,
+} = require('./confluence.js');
+
+
+const validWikiDomains = [
+  'wiki.jenkins-ci.org', // primary
+  'wiki.jenkins.io',
+];
+
+const supportedArchiveFormats = [
+  'zip',
+];
+
 
 // server.js
 // load the things we need
@@ -31,36 +48,88 @@ app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');
 });
 
-// from https://gist.github.com/dperini/729294
+/**
+ * processing incoming parameter parts of urls
+ * @param {request} req
+ * @return {object} extension and isZip values
+ */
+function handleParams(req) {
+  if (!req.params.format) {
+    req.params.format = 'md';
+  }
+  const formats = req.params.format.split('.');
+  const archiveFormat = formats[1] && supportedArchiveFormats.includes(formats[1]) ? formats[1] : '';
+  return {
+    extension: formats[0],
+    archiveFormat,
+  };
+}
+
 /**
  * Handles the /plugin/ action
  * @param {request} req
  * @param {response} res
  */
 async function requestPluginHandler(req, res) {
-  if (!req.params.format) {
-    req.params.format = 'md';
-  }
-  const formats = req.params.format.split('.');
-  const outputType = getFormatType(formats[0]);
+  const {extension, archiveFormat} = handleParams(req);
 
   const pluginData = await getPluginData(req.params.plugin);
-  if (!pluginData.wiki.url.includes('wiki.jenkins-ci.org') && !pluginData.wiki.url.includes('wiki.jenkins.io')) {
-    res.send('Not a wiki page');
-    return;
+  checkUrl(validWikiDomains, pluginData.wiki.url);
+  return processContent(req, res, pluginData.wiki.content, extension, archiveFormat);
+}
+
+/**
+ *
+ * @param {request} req
+ * @param {response} res
+ */
+async function requestConfluencePageHandler(req, res) {
+  const {extension, archiveFormat} = handleParams(req);
+
+  const content = await getConfluenceContent(req.params.plugin);
+  return processContent(req, res, content, extension, archiveFormat);
+}
+
+/**
+ *
+ * @param {request} req
+ * @param {response} res
+ */
+async function requestConfluenceUrlHandler(req, res) {
+  const urlParts = req.originalUrl.replace(/^\/confluence-url\//, '').split('.');
+  let archiveFormat = '';
+  if (supportedArchiveFormats.includes(urlParts[urlParts.length - 1])) {
+    archiveFormat = urlParts.pop();
   }
+  const extension = urlParts.pop();
+  getFormatType(extension);
+  const url = decodeURIComponent(urlParts.join('.'));
+  checkUrl(validWikiDomains, url);
+  const pageId = await getConfluencePageId(url);
+  const content = await getConfluenceContent(pageId);
+
+  return processContent(req, res, content, extension, archiveFormat);
+}
+
+
+/**
+ * Handles the /plugin/ action
+ * @param {request} req
+ * @param {response} res
+ * @param {string} wikiContent content to process
+ * @param {string} extension which format/extension do we want
+ * @param {string} archiveFormat do we want a zip
+ */
+async function processContent(req, res, wikiContent, extension, archiveFormat) {
   res.type('text/plain; charset=utf-8');
-  const {stdout} = await convertBody(
-      req.log,
-      pluginData.wiki.content,
-      outputType
-  );
-  if (formats[1] === 'zip') {
-    const archive = archiver('zip', {
+  const outputType = getFormatType(extension);
+  const {stdout} = await convertBody( req.log, wikiContent, outputType);
+  if (archiveFormat) {
+    const archive = archiver(archiveFormat, {
       zlib: {level: 9}, // Sets the compression level.
     });
     const files = [];
-    const images = findImages(pluginData.wiki.content).map(decodeEntities);
+    const images = findImages(wikiContent).map(decodeEntities);
     const urlRE = new RegExp('(' + images.map((i) => i.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|') + ')', 'gi');
     const content = await replaceAsync(stdout, urlRE, async function(val, grab) {
       if (!images.includes(val)) {
@@ -82,7 +151,7 @@ async function requestPluginHandler(req, res) {
     });
     files.push({
       content: Buffer.from(content),
-      filename: 'README.' + formats[0],
+      filename: 'README.' + extension,
     });
     for (const file of files) {
       archive.append(file.content, {name: file.filename});
@@ -93,7 +162,7 @@ async function requestPluginHandler(req, res) {
     archive.on('warning', function(err) {
       throw err;
     });
-    res.attachment(`${req.params.plugin}.zip`).type('zip');
+    res.attachment(`${req.params.plugin}.${archiveFormat}`).type(archiveFormat);
     archive.on('end', () => res.end()); // end response when archive stream ends
     archive.pipe(res);
     archive.finalize();
@@ -103,8 +172,14 @@ async function requestPluginHandler(req, res) {
   }
 }
 app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(requestPluginHandler));
+app.get('/confluence-page-id/:plugin([^\\.]+)\.?:format?', wrap(requestConfluencePageHandler));
+app.get('/confluence-url/:plugin([^\\.]+)\.?:format?', wrap(requestConfluenceUrlHandler));
 
-app.use(expressBunyanLogger.errorLogger());
+app.use(function(err, req, res, next) {
+  req.log.error(err.stack);
+  res.status(err.code || 500).send(err.message);
+});
+
 
 if (typeof require !== 'undefined' && require.main === module) {
   recordPandoc().then(() => {

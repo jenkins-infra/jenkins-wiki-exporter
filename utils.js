@@ -1,7 +1,10 @@
+/* eslint-env node */
 const bunyan = require('bunyan');
 const axios = require('axios');
 const {basename} = require('path');
 const {spawn, execFile} = require('child_process');
+const {parse: urlParse} = require('url');
+const createError = require('http-errors');
 const DomParser = require('dom-parser');
 
 const logger = bunyan.createLogger({
@@ -208,8 +211,22 @@ function recordPandoc() {
   });
 }
 
+/**
+ * Checks the given url to see if its valid confluence domain
+ * @param {string[]} validWikiDomains valid domains
+ * @param {string} url to check
+ * @return {boolean} true valid
+ * @throws error if not valid
+ */
+function checkUrl(validWikiDomains, url) {
+  if (!validWikiDomains.includes(urlParse(url).host)) {
+    throw createError(400, url + ' is not a valid wiki url.');
+  }
+  return true;
+}
 
 module.exports = {
+  checkUrl,
   convertBody,
   decodeEntities,
   findImages,

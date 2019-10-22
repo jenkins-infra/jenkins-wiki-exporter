@@ -8,6 +8,13 @@ Currently it is hosted on https://jenkins-wiki-exporter.g4v.dev/
 
 See the documentation [here](https://jenkins.io/doc/developer/publishing/wiki-page/#migrating-from-wiki-to-github).
 
+## Configuration
+
+### Environmental Variables
+
+* CONFLUENCE_USERNAME - username that connects to wiki.jenkins.io
+* CONFLUENCE_PASSWORD - password that connects to wiki.jenkins.io
+
 # Contributing
 
 See the Makefile in the repository

@@ -58,9 +58,11 @@
       </style>
       <div style="margin: auto; width: 60%; padding: 10px;">
         <div>
-          Plugin ID (you can find it on the <a href="https://plugins.jenkins.io/">Jenkins Plugin Site</a>):
+          <label for="pluginName">
+            Plugin ID (you can find it on the <a href="https://plugins.jenkins.io/">Jenkins Plugin Site</a>):
+          </label>
           <br />
-          <input id="pluginName" type="text" tabindex="1" size="50" style="width: 100%">
+          <input name="pluginName" id="pluginName" type="text" tabindex="1" size="50" style="width: 100%">
         </div>
         <div>
           Format
@@ -74,9 +76,9 @@
           <input type="submit" value="Convert" id="convertButton" />
         </div>
         <div>
-          Result:
+          <label for="markdown">Result:</label>
           <br />
-          <textarea id="markdown" rows="100" cols="50" style="width: 100%" readonly value=""></textarea>
+          <textarea id="markdown" name="markdown" rows="100" cols="50" style="width: 100%" readonly value=""></textarea>
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ const onsubmit = function(ev) {
           return response.blob()
               .then((blob) => {
                 $markdown.value = 'Saving...';
-                saveAs(blob, pluginName + type);
+                document.saveAs(blob, pluginName + type);
               });
         } else {
           return response.text().then((body) => $markdown.value = body);

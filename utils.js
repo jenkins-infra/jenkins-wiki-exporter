@@ -1,3 +1,4 @@
+/* eslint-env node */
 const bunyan = require('bunyan');
 const axios = require('axios');
 const {basename} = require('path');

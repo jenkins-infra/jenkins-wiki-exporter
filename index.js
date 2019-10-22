@@ -1,3 +1,4 @@
+/* eslint-env node */
 const expressBunyanLogger = require('express-bunyan-logger');
 const archiver = require('archiver');
 const {basename} = require('path');
@@ -31,7 +32,6 @@ app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');
 });
 
-// from https://gist.github.com/dperini/729294
 /**
  * Handles the /plugin/ action
  * @param {request} req
@@ -42,25 +42,34 @@ async function requestPluginHandler(req, res) {
     req.params.format = 'md';
   }
   const formats = req.params.format.split('.');
-  const outputType = getFormatType(formats[0]);
 
   const pluginData = await getPluginData(req.params.plugin);
   if (!pluginData.wiki.url.includes('wiki.jenkins-ci.org') && !pluginData.wiki.url.includes('wiki.jenkins.io')) {
     res.send('Not a wiki page');
     return;
   }
+  const isZip = formats[1] === 'zip';
+  return processContent(req, res, pluginData.wiki.content, formats[0], isZip);
+}
+
+/**
+ * Handles the /plugin/ action
+ * @param {request} req
+ * @param {response} res
+ * @param {string} wikiContent content to process
+ * @param {string} extension which format/extension do we want
+ * @param {bool} isZip do we want a zip
+ */
+async function processContent(req, res, wikiContent, extension, isZip) {
   res.type('text/plain; charset=utf-8');
-  const {stdout} = await convertBody(
-      req.log,
-      pluginData.wiki.content,
-      outputType
-  );
-  if (formats[1] === 'zip') {
+  const outputType = getFormatType(extension);
+  const {stdout} = await convertBody( req.log, wikiContent, outputType);
+  if (isZip) {
     const archive = archiver('zip', {
       zlib: {level: 9}, // Sets the compression level.
     });
     const files = [];
-    const images = findImages(pluginData.wiki.content).map(decodeEntities);
+    const images = findImages(wikiContent).map(decodeEntities);
     const urlRE = new RegExp('(' + images.map((i) => i.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|') + ')', 'gi');
     const content = await replaceAsync(stdout, urlRE, async function(val, grab) {
       if (!images.includes(val)) {
@@ -82,7 +91,7 @@ async function requestPluginHandler(req, res) {
     });
     files.push({
       content: Buffer.from(content),
-      filename: 'README.' + formats[0],
+      filename: 'README.' + extension,
     });
     for (const file of files) {
       archive.append(file.content, {name: file.filename});

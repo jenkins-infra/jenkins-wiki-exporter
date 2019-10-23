@@ -1,22 +1,10 @@
 #!/usr/bin/groovy
 if (JENKINS_URL == 'https://ci.jenkins.io/') {
-  pipeline {
-    agent {
-      label: 'docker&&linux'
-    }
-
-    options {
-      buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
-      timeout(time: 60, unit: "MINUTES")
-      ansiColor("xterm")
-    }
-
-    stages {
-      stage("Build") {
-        environment { DOCKER = credentials("${credential}") }
-        steps {
-          sh "docker build -t jenkins-wiki-exporter ."
-        }
+  node('docker&&linux') {
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5'))])
+    timeout(30) {
+      ansiColor('xterm') {
+        sh "docker build -t jenkins-wiki-exporter ."
       }
     }
   }

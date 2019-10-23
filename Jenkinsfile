@@ -4,6 +4,7 @@ if (JENKINS_URL == 'https://ci.jenkins.io/') {
     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5'))])
     timeout(30) {
       ansiColor('xterm') {
+        checkout scm
         sh "docker build -t jenkins-wiki-exporter ."
       }
     }

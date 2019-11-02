@@ -18,3 +18,7 @@ See the documentation [here](https://jenkins.io/doc/developer/publishing/wiki-pa
 # Contributing
 
 See the Makefile in the repository
+
+# Releasing
+
+`npm run release`

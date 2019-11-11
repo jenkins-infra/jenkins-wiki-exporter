@@ -58,7 +58,6 @@ const parseUrl = function() {
     const keyAndVal = tuple.split('=');
     params[keyAndVal[0]] = keyAndVal[1];
   });
-  console.log(params);
   return params;
 };
 

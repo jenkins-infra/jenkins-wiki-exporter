@@ -18,7 +18,7 @@ const {
   getConfluencePageId,
   getConfluenceContent,
 } = require('./confluence.js');
-
+const {pluginsReport} = require('./reports.js');
 
 const validWikiDomains = [
   'wiki.jenkins-ci.org', // primary
@@ -47,6 +47,16 @@ app.use(express.static('public'));
 app.get('/healthcheck', function healthcheck(req, res) {
   res.send('OK');
 });
+
+app.get('/progress', async function(req, res) {
+  const plugins = await pluginsReport();
+  res.render('progress', {plugins: plugins});
+});
+
+app.get('/', function(req, res) {
+  res.render('index');
+});
+
 
 /**
  * processing incoming parameter parts of urls

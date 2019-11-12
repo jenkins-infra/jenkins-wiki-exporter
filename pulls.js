@@ -4,5 +4,17 @@ const pulls = {
   'structs': 53,
   'junit': 122,
   'script-security': 264,
+  'plugin-usage': 11,
+  'parallel-test-executor': 90,
+  'timestamper': 37,
+  'login-theme-plugin': 4,
+  'blueocean': 2033,
+  'xml-job-to-job-dsl': 3,
+  'fortify-on-demand-uploader-plugin': 79,
+  'mabl-integration': 23,
+  'xcode': 107,
+  'build-name-setter-plugin': 51,
+  'display-url-api': 28,
+  'mac': 1,
 };
 module.exports = pulls;

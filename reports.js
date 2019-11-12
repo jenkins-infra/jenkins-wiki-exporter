@@ -66,8 +66,8 @@ function lastReportDate() {
   // needs a bit more than a month https://github.com/jenkins-infra/infra-statistics/blob/master/Jenkinsfile#L18
   reportDate.setDate(reportDate.getDate() - 35);
   const month = reportDate.getMonth() + 1; // January: 0 -> 1
-  const prefix = month < 10 ? '0' : '';
-  return reportDate.getFullYear() + prefix + month;
+  const monthStr = month.toString().padStart(2, '0');
+  return reportDate.getFullYear() + monthStr;
 }
 
 module.exports = {

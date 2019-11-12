@@ -1,7 +1,7 @@
 const axios = require('axios');
 const pulls = require('./pulls.js');
 const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
-const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/201910-plugins.csv';
+const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
 const httpCache = {};
 
 /**
@@ -21,8 +21,9 @@ async function pluginsReport() {
   const report = [];
   Object.keys(documentation).forEach(function(key) {
     const plugin = documentation[key];
-    const url = documentation[key].url || '';
+    const url = plugin.url || '';
     plugin.name = key;
+    plugin.installs = plugin.installs || 0;
     if (url.match('https?://github.com/jenkinsci/')) {
       plugin.status = 'OK';
       plugin.className = 'success';
@@ -55,6 +56,18 @@ async function getContent(url, type) {
     httpCache[url] = {'data': response.data, 'timestamp': new Date().getTime()};
     return response.data;
   });
+}
+
+/**
+ * @return {string} last month date as yyyymm
+ */
+function lastReportDate() {
+  const reportDate = new Date();
+  // needs a bit more than a month https://github.com/jenkins-infra/infra-statistics/blob/master/Jenkinsfile#L18
+  reportDate.setDate(reportDate.getDate() - 35);
+  const month = reportDate.getMonth() + 1; // January: 0 -> 1
+  const monthStr = month.toString().padStart(2, '0');
+  return reportDate.getFullYear() + monthStr;
 }
 
 module.exports = {

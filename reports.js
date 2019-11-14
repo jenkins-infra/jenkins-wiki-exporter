@@ -40,10 +40,31 @@ async function pluginsReport() {
   report.sort((a, b) => b.installs - a.installs);
 
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
+  const status = {
+    todo: [],
+    PR: [],
+    done: [],
+    total:[]
+  }
+  const byStatus = report.forEach(plugin => {
+    switch (plugin.status) {
+      case 'TODO':
+        status.todo.push(1);
+        break;
+      case 'PR':   
+        status.PR.push(1);
+        break;
+      case 'OK':
+        status.done.push(1);
+        break;
+      default:
+        throw new Error('Unknown type');
+    }
+  })
 
-  const todo = report.map(plugin => plugin.status === 'TODO' ? 1 : 0).reduce(reducer);
-  const pr = report.map(plugin => plugin.status === 'PR' ? 1 : 0).reduce(reducer);
-  const done = report.map(plugin => plugin.status === 'OK' ? 1 : 0).reduce(reducer);
+  const todo = status.todo.reduce(reducer);
+  const pr = status.PR.reduce(reducer);
+  const done = status.done.reduce(reducer);
   const total = todo + pr + done;
   return {
     plugins: report, 

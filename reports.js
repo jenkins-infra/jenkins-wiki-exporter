@@ -38,7 +38,20 @@ async function pluginsReport() {
     report.push(plugin);
   });
   report.sort((a, b) => b.installs - a.installs);
-  return report;
+
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+  const todo = report.map(plugin => plugin.status === 'TODO' ? 1 : 0).reduce(reducer);
+  const pr = report.map(plugin => plugin.status === 'PR' ? 1 : 0).reduce(reducer);
+  const done = report.map(plugin => plugin.status === 'OK' ? 1 : 0).reduce(reducer);
+  const total = todo + pr + done;
+  return {
+    plugins: report, 
+    todo: todo, 
+    PR: pr, 
+    done: done, 
+    total: total
+  };
 }
 
 /**

@@ -5,6 +5,8 @@
     <div class="container">
       <%- include('navigation'); %>
       <h1>Plugin Migration Progress</h1>
+      <p>Todo: <%= todo %>, PR: <%= PR %>, Done: <%= done %>, Total: <%= total %></p>
+      
       <table  class="table">
       <% plugins.forEach(function(plugin) { %>
         <tr class="table-<%= plugin.className %>">

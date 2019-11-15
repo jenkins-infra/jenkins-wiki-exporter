@@ -49,8 +49,8 @@ app.get('/healthcheck', function healthcheck(req, res) {
 });
 
 app.get('/progress', async function(req, res) {
-  const plugins = await pluginsReport();
-  res.render('progress', {plugins: plugins});
+  const report = await pluginsReport();
+  res.render('progress', report);
 });
 
 app.get('/', function(req, res) {

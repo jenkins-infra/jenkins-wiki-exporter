@@ -38,7 +38,41 @@ async function pluginsReport() {
     report.push(plugin);
   });
   report.sort((a, b) => b.installs - a.installs);
-  return report;
+
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+  const status = {
+    todo: [],
+    PR: [],
+    done: [],
+    total:[]
+  }
+  const byStatus = report.forEach(plugin => {
+    switch (plugin.status) {
+      case 'TODO':
+        status.todo.push(1);
+        break;
+      case 'PR':   
+        status.PR.push(1);
+        break;
+      case 'OK':
+        status.done.push(1);
+        break;
+      default:
+        throw new Error('Unknown type');
+    }
+  })
+
+  const todo = status.todo.reduce(reducer);
+  const pr = status.PR.reduce(reducer);
+  const done = status.done.reduce(reducer);
+  const total = todo + pr + done;
+  return {
+    plugins: report, 
+    todo: todo, 
+    PR: pr, 
+    done: done, 
+    total: total
+  };
 }
 
 /**

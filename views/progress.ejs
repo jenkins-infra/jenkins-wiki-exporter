@@ -5,9 +5,14 @@
     <div class="container">
       <%- include('navigation'); %>
       <h1>Plugin Migration Progress</h1>
-      <p>Todo: <%= todo %>, PR: <%= PR %>, Done: <%= done %>, Total: <%= total %></p>
-      
-      <table  class="table">
+      <p>Todo: <%= statues.todo %>, PR: <%= statues.pr %>, Done: <%= statues.ok %>, Total: <%= statues.total %></p>
+
+      <table class="table table-bordered table-hover" data-sortable="true" data-sort-name="installs" data-sort-order="desc"  data-toggle="table">
+        <thead class="thead-dark">
+          <th data-field="name" data-sortable="true">Plugin Name</th>
+          <th data-field="status" data-sortable="true">Status</th>
+          <th data-field="installs" data-sortable="true">Installs</th>
+        </thead>
       <% plugins.forEach(function(plugin) { %>
         <tr class="table-<%= plugin.className %>">
           <td>
@@ -27,5 +32,13 @@
       <% }); %>
       </table>
     </div>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css"><Paste>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
   </body>
 </html>

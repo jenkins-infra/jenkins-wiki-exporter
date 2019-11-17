@@ -42,7 +42,7 @@ const fetchContent = function(pluginName, type) {
           return response.blob()
               .then((blob) => {
                 $markdown.value = 'Saving...';
-                document.saveAs(blob, pluginName + type);
+                window.saveAs(blob, pluginName + type);
               });
         } else {
           return response.text().then((body) => $markdown.value = body);

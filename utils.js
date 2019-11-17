@@ -67,7 +67,7 @@ function findImages(body) {
     ];
   })
       .flat()
-      .map((url) => url.startsWith('http') ? url : `https://wiki.jenkins.io${url}`)
+      .map((url) => !url || url.startsWith('http') ? url : `https://wiki.jenkins.io${url}`)
       .filter(Boolean);
   return ret;
 }

@@ -39,14 +39,14 @@ async function pluginsReport() {
   });
   report.sort((a, b) => b.installs - a.installs);
 
-  const statues = report.reduce((statues, report) => {
-    statues[report.status.toLowerCase()] = (statues[report.status.toLowerCase()] || 0) + 1;
-    return statues;
+  const statuses = report.reduce((statuses, report) => {
+    statuses[report.status.toLowerCase()] = (statuses[report.status.toLowerCase()] || 0) + 1;
+    return statuses;
   }, {});
-  statues.total = report.length;
+  statuses.total = report.length;
   return {
     plugins: report,
-    statues,
+    statuses,
   };
 }
 

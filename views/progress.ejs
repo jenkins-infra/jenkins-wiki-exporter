@@ -5,9 +5,14 @@
     <div class="container">
       <%- include('navigation'); %>
       <h1>Plugin Migration Progress</h1>
-      <p>Todo: <%= todo %>, PR: <%= PR %>, Done: <%= done %>, Total: <%= total %></p>
-      
-      <table  class="table">
+      <p>Todo: <%= statuses.todo %>, PR: <%= statuses.pr %>, Done: <%= statuses.ok %>, Total: <%= statuses.total %></p>
+
+      <table class="table table-bordered table-hover" data-sortable="true" data-sort-name="installs" data-sort-order="desc"  data-toggle="table">
+        <thead class="thead-dark">
+          <th data-field="name" data-sortable="true">Plugin Name</th>
+          <th data-field="status" data-sortable="true">Status</th>
+          <th data-field="installs" data-sortable="true">Installs</th>
+        </thead>
       <% plugins.forEach(function(plugin) { %>
         <tr class="table-<%= plugin.className %>">
           <td>
@@ -27,5 +32,11 @@
       <% }); %>
       </table>
     </div>
+
+    <link rel="stylesheet" href="/vendor/bootstrap-table.min.css" />
+
+    <script src="/vendor/jquery.min.js"></script>
+    <script src="/vendor/bootstrap.min.js"></script>
+    <script src="/vendor/bootstrap-table.min.js"></script>
   </body>
 </html>

@@ -16,5 +16,7 @@ const pulls = {
   'build-name-setter-plugin': 51,
   'display-url-api': 28,
   'mac': 1,
+  'credentials-plugin': 128,
+  'versioncolumn-plugin': 4,
 };
 module.exports = pulls;

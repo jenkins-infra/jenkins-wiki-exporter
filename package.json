@@ -34,7 +34,7 @@
     "http-errors": "^1.7.3"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.1",
     "eslint-config-google": "^0.14.0",
     "jest": "^24.9.0",
     "mock-express-request": "^0.2.2",

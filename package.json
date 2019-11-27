@@ -28,7 +28,7 @@
     "bunyan": "^1.8.12",
     "confluence-api": "^1.4.0",
     "dom-parser": "^0.1.6",
-    "ejs": "^2.7.1",
+    "ejs": "^3.0.1",
     "express": "^4.17.1",
     "express-bunyan-logger": "^1.3.3",
     "http-errors": "^1.7.3"

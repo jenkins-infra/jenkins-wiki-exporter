@@ -225,6 +225,7 @@ function checkUrl(validWikiDomains, url) {
   return true;
 }
 
+
 module.exports = {
   checkUrl,
   convertBody,
@@ -234,5 +235,5 @@ module.exports = {
   getPluginData,
   getUrlAsStream,
   recordPandoc,
-  replaceAsync,
+  replaceAsync
 };

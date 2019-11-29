@@ -15,8 +15,7 @@ const {
   replaceAsync,
 } = require('./utils.js');
 const {
-  getConfluencePageId,
-  getConfluenceContent,
+  getConfluencePageFromId,
 } = require('./confluence.js');
 const {pluginsReport} = require('./reports.js');
 
@@ -93,18 +92,6 @@ async function requestPluginHandler(req, res) {
  * @param {request} req
  * @param {response} res
  */
-async function requestConfluencePageHandler(req, res) {
-  const {extension, archiveFormat} = handleParams(req);
-
-  const content = await getConfluenceContent(req.params.plugin);
-  return processContent(req, res, content, extension, archiveFormat);
-}
-
-/**
- *
- * @param {request} req
- * @param {response} res
- */
 async function requestConfluenceUrlHandler(req, res) {
   const urlParts = req.originalUrl.replace(/^\/confluence-url\//, '').split('.');
   let archiveFormat = '';
@@ -115,8 +102,7 @@ async function requestConfluenceUrlHandler(req, res) {
   getFormatType(extension);
   const url = decodeURIComponent(urlParts.join('.'));
   checkUrl(validWikiDomains, url);
-  const pageId = await getConfluencePageId(url);
-  const content = await getConfluenceContent(pageId);
+  const content = await getConfluencePageFromId(url);
 
   return processContent(req, res, content, extension, archiveFormat);
 }
@@ -182,7 +168,6 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
   }
 }
 app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(requestPluginHandler));
-app.get('/confluence-page-id/:plugin([^\\.]+)\.?:format?', wrap(requestConfluencePageHandler));
 app.get('/confluence-url/:plugin([^\\.]+)\.?:format?', wrap(requestConfluenceUrlHandler));
 
 app.use(function(err, req, res, next) {

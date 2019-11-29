@@ -22,9 +22,7 @@ const onPageLoad = function() {
 const fetchContent = function(pluginName, type) {
   $markdown.value = 'Pending....';
   let url = './plugin/' + encodeURIComponent(pluginName) + type;
-  if (pluginName.match(/^[0-9]+$/i)) {
-    url = '/confluence-page-id/' + encodeURIComponent(pluginName) + type;
-  } else if (pluginName.match(/^https?\:\/\//)) {
+  if (pluginName.match(/^https?\:\/\//)) {
     url = '/confluence-url/' + encodeURIComponent(pluginName) + type;
   }
 

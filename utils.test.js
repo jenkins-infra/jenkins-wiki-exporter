@@ -2,6 +2,7 @@
 const {
   findImages,
   checkUrl,
+  removeExternalLink,
 } = require('./utils.js');
 
 describe('utils', function() {
@@ -32,7 +33,7 @@ describe('utils', function() {
     expect(checkUrl(['wiki.jenkins.io'], 'https://wiki.jenkins.io/something')).toBe(true);
   });
   it('removeExternalLink', () => {
-    expect(removeExternalLink("(https://github.com/jenkinsci/plugin-pom){.external-link}.").toBe("(https://github.com/jenkinsci/plugin-pom)"));
+    expect(removeExternalLink("(https://github.com/jenkinsci/plugin-pom){.external-link}.")).toBe("(https://github.com/jenkinsci/plugin-pom)");
   });
 });
 

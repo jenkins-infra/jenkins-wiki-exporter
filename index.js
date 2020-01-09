@@ -127,7 +127,8 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
     const files = [];
     const images = findImages(wikiContent).map(decodeEntities);
     const urlRE = new RegExp('(' + images.map((i) => i.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|') + ')', 'gi');
-    const content = await replaceAsync(stdout, urlRE, async function(val, grab) {
+    const parsedURL = urlRE.replace(/^{.external-.*$/, "");
+    const content = await replaceAsync(stdout, parsedURL, async function(val, grab) {
       if (!images.includes(val)) {
         return val;
       }

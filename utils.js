@@ -225,9 +225,19 @@ function checkUrl(validWikiDomains, url) {
   return true;
 }
 
+/**
+ * Removes external links from urls
+ * @param {string} url to check
+ * @return {string} parsed string
+ */
+function removeExternalLink(url) {
+  return url.replace(/{.external-link}./, "");
+}
+
 
 module.exports = {
   checkUrl,
+  removeExternalLink,
   convertBody,
   decodeEntities,
   findImages,

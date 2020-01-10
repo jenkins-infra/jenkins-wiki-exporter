@@ -231,7 +231,8 @@ function checkUrl(validWikiDomains, url) {
  * @return {string} parsed string
  */
 function removeExternalLink(url) {
-  return url.replace(/{.external-link}./, "");
+  const regex = /{.external-link}.|{.external-link}|{.external-link}\\/g;
+  return url.replace(regex, "");
 }
 
 

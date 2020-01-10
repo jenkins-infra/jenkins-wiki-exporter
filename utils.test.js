@@ -3,7 +3,10 @@ const {
   findImages,
   checkUrl,
   removeExternalLink,
+  convertBody,
 } = require('./utils.js');
+
+const fs = require("fs");
 
 describe('utils', function() {
   it('findImages', async () => {
@@ -35,5 +38,10 @@ describe('utils', function() {
   it('removeExternalLink', () => {
     expect(removeExternalLink("(https://github.com/jenkinsci/plugin-pom){.external-link}.")).toBe("(https://github.com/jenkinsci/plugin-pom)");
   });
+  it('removeExternalLink', async () => {
+    const rawString = fs.readFileSync("./__testData/ExternalLinkMarkdown.md").toString('utf-8');
+    const cleanString = fs.readFileSync("./__testData/ExternalLinkRemovedMarkdown.md").toString('utf-8');
+    expect(removeExternalLink(rawString)).toBe(cleanString)
+    });
 });
 

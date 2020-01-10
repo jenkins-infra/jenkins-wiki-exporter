@@ -120,7 +120,7 @@ async function requestConfluenceUrlHandler(req, res) {
 async function processContent(req, res, wikiContent, extension, archiveFormat) {
   res.type('text/plain; charset=utf-8');
   const outputType = getFormatType(extension);
-  const {stdout} = await convertBody( req.log, wikiContent, outputType);
+  const {stdout} = await convertBody(req.log, wikiContent, outputType);
   if (archiveFormat) {
     const archive = archiver(archiveFormat, {
       zlib: {level: 9}, // Sets the compression level.

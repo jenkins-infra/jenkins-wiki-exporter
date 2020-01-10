@@ -8,7 +8,7 @@
     "dev": "nodemon",
     "build": "true",
     "start": "node index.js",
-    "lint": "eslint --ext .js --ignore-path .gitignore .",
+    "lint": "eslint .",
     "release": "np",
     "test": "jest"
   },

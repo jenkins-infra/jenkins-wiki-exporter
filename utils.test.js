@@ -2,7 +2,10 @@
 const {
   findImages,
   checkUrl,
+  replaceConfluenceContent,
 } = require('./utils.js');
+
+const fs = require('fs');
 
 describe('utils', function() {
   it('findImages', async () => {
@@ -30,6 +33,11 @@ describe('utils', function() {
   });
   it('checkUrl', () => {
     expect(checkUrl(['wiki.jenkins.io'], 'https://wiki.jenkins.io/something')).toBe(true);
+  });
+  it('replaceConfluenceContent', () => {
+    const input = fs.readFileSync('test-data/with-classes.html', 'utf8');
+    const expected = fs.readFileSync('test-data/with-classes-removed.html', 'utf8');
+    expect(replaceConfluenceContent(input)).toBe(expected);
   });
 });
 

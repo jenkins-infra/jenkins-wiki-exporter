@@ -246,6 +246,7 @@ module.exports = {
   convertBody,
   decodeEntities,
   findImages,
+  replaceConfluenceContent,
   getFormatType,
   getPluginData,
   getUrlAsStream,

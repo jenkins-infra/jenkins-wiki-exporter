@@ -8,7 +8,7 @@ Array [
   
 
 Provides [W3C Web
-Notifications](http://dev.w3.org/2006/webapi/WebNotifications/publish/Notifications.html){.external-link}
+Notifications](http://dev.w3.org/2006/webapi/WebNotifications/publish/Notifications.html)
 support for builds.
 
 ### Browser compatibility
@@ -21,11 +21,11 @@ check this website for details
 
 ### Screenshots
 
-|                      |                                                                                                                                                                                              |
-|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Safari Notification  | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-notifications-1.3.png?version=1&modificationDate=1407001198000&api=v2){.confluence-embedded-image .confluence-thumbnail} |
-| System Configuration | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-configure-1.1.png?version=1&modificationDate=1328215062000&api=v2){.confluence-embedded-image .confluence-thumbnail}     |
-| Job Configuration    | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-job-configure-1.1.png?version=1&modificationDate=1328215063000&api=v2){.confluence-embedded-image .confluence-thumbnail} |
+|                      |                                                                                                                                            |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Safari Notification  | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-notifications-1.3.png?version=1&modificationDate=1407001198000&api=v2) |
+| System Configuration | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-configure-1.1.png?version=1&modificationDate=1328215062000&api=v2)     |
+| Job Configuration    | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-job-configure-1.1.png?version=1&modificationDate=1328215063000&api=v2) |
 
   
 
@@ -37,12 +37,12 @@ check this website for details
 
 #### 1.5 (released 2015-03-06)
 
--   [JENKINS-27222](https://issues.jenkins-ci.org/browse/JENKINS-27222){.external-link} -
+-   [JENKINS-27222](https://issues.jenkins-ci.org/browse/JENKINS-27222) -
     Fixes global configuration not saving/loading.
 
 #### 1.3 (released 2014-08-01)
 
--   [JENKINS-16236](https://issues.jenkins-ci.org/browse/JENKINS-16236){.external-link} -
+-   [JENKINS-16236](https://issues.jenkins-ci.org/browse/JENKINS-16236) -
     upgrade to use current html5 notification spec. Removes html in the
     notifications but now works again.
 
@@ -83,7 +83,7 @@ Array [
   
 
 Provides [W3C Web
-Notifications](http://dev.w3.org/2006/webapi/WebNotifications/publish/Notifications.html){.external-link}
+Notifications](http://dev.w3.org/2006/webapi/WebNotifications/publish/Notifications.html)
 support for builds.
 
 ### Browser compatibility
@@ -96,11 +96,11 @@ check this website for details
 
 ### Screenshots
 
-|                      |                                                                                                                                                                                              |
-|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Safari Notification  | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-notifications-1.3.png?version=1&modificationDate=1407001198000&api=v2){.confluence-embedded-image .confluence-thumbnail} |
-| System Configuration | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-configure-1.1.png?version=1&modificationDate=1328215062000&api=v2){.confluence-embedded-image .confluence-thumbnail}     |
-| Job Configuration    | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-job-configure-1.1.png?version=1&modificationDate=1328215063000&api=v2){.confluence-embedded-image .confluence-thumbnail} |
+|                      |                                                                                                                                            |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Safari Notification  | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-notifications-1.3.png?version=1&modificationDate=1407001198000&api=v2) |
+| System Configuration | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-configure-1.1.png?version=1&modificationDate=1328215062000&api=v2)     |
+| Job Configuration    | ![](https://wiki.jenkins.io/download/thumbnails/58917110/screenshot-job-configure-1.1.png?version=1&modificationDate=1328215063000&api=v2) |
 
   
 
@@ -112,12 +112,12 @@ check this website for details
 
 #### 1.5 (released 2015-03-06)
 
--   [JENKINS-27222](https://issues.jenkins-ci.org/browse/JENKINS-27222){.external-link} -
+-   [JENKINS-27222](https://issues.jenkins-ci.org/browse/JENKINS-27222) -
     Fixes global configuration not saving/loading.
 
 #### 1.3 (released 2014-08-01)
 
--   [JENKINS-16236](https://issues.jenkins-ci.org/browse/JENKINS-16236){.external-link} -
+-   [JENKINS-16236](https://issues.jenkins-ci.org/browse/JENKINS-16236) -
     upgrade to use current html5 notification spec. Removes html in the
     notifications but now works again.
 

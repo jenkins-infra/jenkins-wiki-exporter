@@ -1,6 +1,8 @@
 .DEFAULT_GOAL := help
 DOCKER_PREFIX ?= halkeye
 DOCKER_IMAGE ?= jenkins-wiki-exporter
+CONFLUENCE_USERNAME ?= $(shell bash -c 'read -s -p "Jenkins Wiki Username: " username; echo $$username')
+CONFLUENCE_PASSWORD ?= $(shell bash -c 'read -s -p "Jenkins Wiki Password: " pwd; echo $$pwd')
 
 dev: ## run the dev server
 	npm run dev

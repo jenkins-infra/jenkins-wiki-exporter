@@ -134,7 +134,7 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
       }
 
       try {
-        const filename = `/docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
+        const filename = `docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
         files.push({
           content: await getUrlAsStream(grab),
           filename: filename,

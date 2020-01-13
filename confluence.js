@@ -43,21 +43,29 @@ async function getConfluencePageFromId(url) {
   return getContentFromConfluencePage(url, body);
 }
 
+/**
+ * Get's content from a confluence page
+ * Remove's some content that we don't want
+ *
+ * @param {*} url confluence url
+ * @param {*} content page content
+ * @return {string} processed html
+ */
 function getContentFromConfluencePage(url, content) {
   const $ = cheerio.load(cheerio.load(content)('.wiki-content').html());
 
-  $('.conf-macro.output-inline th:contains("Plugin Information")').parents('table').remove()
+  $('.conf-macro.output-inline th:contains("Plugin Information")').parents('table').remove();
 
   // Remove any table of contents
-  $(".toc").remove();
+  $('.toc').remove();
 
   // Replace href/src with the wiki url
   $('[href]').each((idx, elm) => {
     $(elm).attr('href', URL.resolve(url, $(elm).attr('href')));
-  })
+  });
   $('[src]').each((idx, elm) => {
     $(elm).attr('src', URL.resolve(url, $(elm).attr('src')));
-  })
+  });
   return $.html();
 }
 

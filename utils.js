@@ -6,6 +6,7 @@ const {spawn, execFile} = require('child_process');
 const {parse: urlParse} = require('url');
 const createError = require('http-errors');
 const DomParser = require('dom-parser');
+const cheerio = require('cheerio');
 
 const logger = bunyan.createLogger({
   name: basename(process.argv[0]) + ':utils',
@@ -149,7 +150,7 @@ async function convertBody(log, body, format) {
           encoding: 'utf8',
           env: {...process.env, LANG: 'en_US.UTF-8', LC_CTYPE: 'en_US.UTF-8'},
           stdio: ['pipe', 'pipe', 'pipe'],
-        }
+        },
     );
     p.once('error', reject);
     p.once('exit', (code, signal) => {
@@ -168,10 +169,25 @@ async function convertBody(log, body, format) {
     });
     let stdout = '';
     p.stdout.on('data', (data) => stdout += data);
-    p.stdin.write(body);
+    p.stdin.write(replaceConfluenceContent(body));
     p.stdin.end();
   });
 }
+
+/**
+ * Remove's content that we don't want
+ *
+ * @param {*} body page content
+ * @return {string} processed html
+ */
+function replaceConfluenceContent(body) {
+  const $ = cheerio.load(cheerio.load(body).html());
+  $('img').removeClass();
+  $('a').removeClass();
+
+  return $.html();
+}
+
 /**
  * Which pandoc format do we want to output as
  * @param {string} type Which file extension do we want
@@ -206,7 +222,7 @@ function recordPandoc() {
           }
           logger.info(stdout + stderr);
           resolve();
-        }
+        },
     );
   });
 }
@@ -225,15 +241,15 @@ function checkUrl(validWikiDomains, url) {
   return true;
 }
 
-
 module.exports = {
   checkUrl,
   convertBody,
   decodeEntities,
   findImages,
+  replaceConfluenceContent,
   getFormatType,
   getPluginData,
   getUrlAsStream,
   recordPandoc,
-  replaceAsync
+  replaceAsync,
 };

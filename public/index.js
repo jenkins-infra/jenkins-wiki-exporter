@@ -5,14 +5,24 @@ const $convertButton = document.getElementById('convertButton');
 
 const onsubmit = function(ev) {
   ev.preventDefault();
-  $markdown.value = 'Pending....';
   const type = document.querySelector('#format:checked').value;
   const pluginName = $pluginName.value;
+  fetchContent(pluginName, type);
+};
 
+const onPageLoad = function() {
+  const params = parseUrl();
+  const pluginName = params.pluginName;
+  if (pluginName) {
+    $pluginName.value = pluginName;
+    fetchContent(pluginName, params.type || '.md');
+  }
+};
+
+const fetchContent = function(pluginName, type) {
+  $markdown.value = 'Pending....';
   let url = './plugin/' + encodeURIComponent(pluginName) + type;
-  if (pluginName.match(/^[0-9]+$/i)) {
-    url = '/confluence-page-id/' + encodeURIComponent(pluginName) + type;
-  } else if (pluginName.match(/^https?\:\/\//)) {
+  if (pluginName.match(/^https?\:\/\//)) {
     url = '/confluence-url/' + encodeURIComponent(pluginName) + type;
   }
 
@@ -30,7 +40,7 @@ const onsubmit = function(ev) {
           return response.blob()
               .then((blob) => {
                 $markdown.value = 'Saving...';
-                document.saveAs(blob, pluginName + type);
+                window.saveAs(blob, pluginName + type);
               });
         } else {
           return response.text().then((body) => $markdown.value = body);
@@ -39,6 +49,17 @@ const onsubmit = function(ev) {
       .catch((err) => $markdown.value = 'Error: ' + err.toString());
 };
 
+const parseUrl = function() {
+  const query = location.search.replace(/^\?/, '').split('&');
+  const params = {};
+  query.forEach(function(tuple) {
+    const keyAndVal = tuple.split('=');
+    params[keyAndVal[0]] = keyAndVal[1];
+  });
+  return params;
+};
+
+window.addEventListener('load', onPageLoad);
 $pluginName.addEventListener('keydown', function(e) {
   if (e.key == 'Enter') {
     e.preventDefault();

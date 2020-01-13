@@ -11,7 +11,7 @@ build: ## build the docker version
 	docker build -t $(DOCKER_PREFIX)/$(DOCKER_IMAGE) .
 
 run: ## run the latest docker build
-	docker run --rm -it --name $(DOCKER_IMAGE) -e CONFLUENCE_USERNAME=$(CONFLUENCE_USERNAME) -e CONFLUENCE_PASSWORD=$(CONFLUENCE_PASSWORD) -p 3000:3000 -t $(DOCKER_PREFIX)/$(DOCKER_IMAGE)
+	docker run --rm -it -e CONFLUENCE_USERNAME -e CONFLUENCE_PASSWORD --name $(DOCKER_IMAGE) -p 3000:3000 -t $(DOCKER_PREFIX)/$(DOCKER_IMAGE)
 
 push: ## push to docker registry
 	docker push $(DOCKER_PREFIX)/$(DOCKER_IMAGE)

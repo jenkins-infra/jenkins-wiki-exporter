@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('header', {title: "Export"}); %>
+  <body>
+    <div class="container">
+      <%- include('navigation'); %>
+      <div style="margin: auto; width: 60%; padding: 10px;">
+        <div>
+          <label for="pluginName">
+            Provide one of the following:
+            <ul>
+              <li>Plugin ID (you can find it on the <a href="https://plugins.jenkins.io/">Jenkins Plugin Site</a>)</li>
+              <li>Jenkins Confluence/wiki URL</li>
+            </ul>
+          </label>
+          <br />
+          <input name="pluginName" id="pluginName" type="text" tabindex="1" size="50" style="width: 100%">
+        </div>
+        <div>
+          Format
+          <br />
+          <label><input id="format" type="radio" name="format" value=".md" checked/> Markdown</label>
+          <label><input id="format" type="radio" name="format" value=".md.zip" /> Markdown Zip</label>
+          <label><input id="format" type="radio" name="format" value=".adoc" /> Asciidoc</label>
+          <label><input id="format" type="radio" name="format" value=".adoc.zip" /> Asciidoc Zip</label>
+        </div>
+        <div>
+          <input type="submit" value="Convert" id="convertButton" />
+        </div>
+        <div>
+          <label for="markdown">Result:</label>
+          <br />
+          <textarea id="markdown" name="markdown" rows="100" cols="50" style="width: 100%" readonly value=""></textarea>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.0.0/dist/fetch.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js" integrity="sha256-u/J1Urdrk3nCYFefpoeTMgI5viU1ujCDu2fXXoSJjhg=" crossorigin="anonymous"></script>
+    <script src="/index.js"></script>
+  </body>
+</html>
+

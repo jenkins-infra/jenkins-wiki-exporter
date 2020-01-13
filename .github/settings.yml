@@ -1,6 +1,7 @@
 repository:
   name: jenkins-wiki-exporter
-  description: Quick util to convert jenkins plugin wiki format to github markdown or asciidoc https://jenkins-wiki-exporter.jenkins.io
+  description: Quick util to convert jenkins plugin wiki format to github markdown or asciidoc
+  homepage: https://jenkins-wiki-exporter.jenkins.io
   topics: 'confluence, jenkins, hacktoberfest, pandoc'
   private: false
   default_branch: master

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('header', {title: "Plugin Migration Progress"}); %>
+  <body>
+    <div class="container">
+      <%- include('navigation'); %>
+      <h1>Plugin Migration Progress</h1>
+      <p>Todo: <%= statuses.todo %>, PR: <%= statuses.pr %>, Done: <%= statuses.ok %>, Total: <%= statuses.total %></p>
+
+      <table class="table table-bordered table-hover" data-sortable="true" data-sort-name="installs" data-sort-order="desc"  data-toggle="table">
+        <thead class="thead-dark">
+          <th data-field="name" data-sortable="true">Plugin Name</th>
+          <th data-field="status" data-sortable="true">Status</th>
+          <th data-field="installs" data-sortable="true">Installs</th>
+        </thead>
+      <% plugins.forEach(function(plugin) { %>
+        <tr class="table-<%= plugin.className %>">
+          <td>
+            <a href="https://plugins.jenkins.io/<%= plugin.name %>" target="_blank">
+              <%= plugin.name %>
+            </a>
+          </td>
+          <td>
+            <a href="<%= plugin.action %>">
+              <%= plugin.status %>
+            </a>
+          </td>
+          <td>
+            <%= plugin.installs %>
+          </td>
+        </tr>
+      <% }); %>
+      </table>
+    </div>
+
+    <link rel="stylesheet" href="/vendor/bootstrap-table.min.css" />
+
+    <script src="/vendor/jquery.min.js"></script>
+    <script src="/vendor/bootstrap.min.js"></script>
+    <script src="/vendor/bootstrap-table.min.js"></script>
+  </body>
+</html>

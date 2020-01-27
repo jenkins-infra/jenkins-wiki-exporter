@@ -24,7 +24,7 @@
   "homepage": "https://github.com/halkeye/confluence-to-md-web#readme",
   "dependencies": {
     "archiver": "^3.1.1",
-    "axios": "^0.19.1",
+    "axios": "^0.19.2",
     "bunyan": "^1.8.12",
     "cheerio": "^1.0.0-rc.3",
     "confluence-api": "^1.4.0",

@@ -1,6 +1,6 @@
 /* eslint-env node */
 const bunyan = require('bunyan');
-const axios = require('axios');
+const axios = require('./axios');
 const {basename} = require('path');
 const {spawn, execFile} = require('child_process');
 const {parse: urlParse} = require('url');

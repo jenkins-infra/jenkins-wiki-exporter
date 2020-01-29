@@ -2,12 +2,11 @@
 const {basename} = require('path');
 const URL = require('url');
 const bunyan = require('bunyan');
-const axios = require('axios');
+const axios = require('./axios');
 const Confluence = require('confluence-api');
 const DomParser = require('dom-parser');
 const cheerio = require('cheerio');
 const {promisify} = require('util');
-const {replaceImages} = require('./utils.js');
 
 const logger = bunyan.createLogger({
   name: basename(process.argv[0]) + ':confluence',

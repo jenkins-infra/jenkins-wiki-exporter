@@ -1,7 +1,7 @@
 const axios = require('axios');
-const package = require('./package.json');
+const pkg = require('./package.json');
 
 module.exports = axios.create({
-  headers: {'User-Agent': `jenkins-wiki-exporter/${package.version}`},
+  headers: {'User-Agent': `jenkins-wiki-exporter/${pkg.version}`},
 });
 

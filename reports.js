@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('./axios');
 const pulls = require('./pulls.js');
 const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';

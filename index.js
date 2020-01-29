@@ -119,7 +119,7 @@ async function requestConfluenceUrlHandler(req, res) {
 async function processContent(req, res, wikiContent, extension, archiveFormat) {
   res.type('text/plain; charset=utf-8');
   const outputType = getFormatType(extension);
-  const {stdout} = await convertBody( req.log, wikiContent, outputType);
+  const {stdout} = await convertBody(req.log, wikiContent, outputType);
   if (archiveFormat) {
     const archive = archiver(archiveFormat, {
       zlib: {level: 9}, // Sets the compression level.
@@ -133,13 +133,25 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
         return val;
       }
 
+
       try {
-        const filename = `docs/images/${decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_')}`;
+        checkUrl(validWikiDomains, grab);
+      } catch (e) {
+        // not a wiki image url, so leave it where it is
+        return val;
+      }
+
+      const dir = 'docs/images/';
+      const filename = decodeURIComponent(basename(urlParse(grab).pathname)).replace(/\s+/g, '_').substr((250-dir.length)*-1);
+      if (!filename) {
+        return val;
+      }
+      try {
         files.push({
           content: await getUrlAsStream(grab),
-          filename: filename,
+          filename: `${dir}${filename}`,
         });
-        return val.replace(grab, filename);
+        return val.replace(grab, `${dir}${filename}`);
       } catch (e) {
         // FIXME - sentry.captureException(e);
         req.log.error(e);

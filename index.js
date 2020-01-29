@@ -44,7 +44,10 @@ app.use(expressBunyanLogger());
 app.use(express.static('public'));
 
 app.get('/healthcheck', function healthcheck(req, res) {
-  res.send('OK');
+  res.json({
+    'OK': true,
+    'version': require('./package.json').version,
+  });
 });
 
 app.get('/progress', async function(req, res) {

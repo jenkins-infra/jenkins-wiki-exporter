@@ -14,6 +14,7 @@ See the documentation [here](https://jenkins.io/doc/developer/publishing/wiki-pa
 
 * CONFLUENCE_USERNAME - username that connects to wiki.jenkins.io
 * CONFLUENCE_PASSWORD - password that connects to wiki.jenkins.io
+* GITHUB_TOKEN        - token for GitHub API, needs `read:org` and `public_repo` scopes
 
 # Contributing
 

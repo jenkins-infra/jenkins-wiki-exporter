@@ -5,30 +5,30 @@ const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
 const httpCache = {};
 const gitHubToken = process.env.GITHUB_TOKEN;
-const graphql = 'query {'+
- ' organization(login:"jenkinsci") {'+
- '   project(number:3 ) {'+
- '     columns (first:100) {'+
- '       edges {'+
- '         node {'+
- '           id'+
- '           cards {'+
- '             edges {'+
- '               node {'+
- '                 content {'+
- '                   ... on PullRequest {'+
- '                     url'+
- '                   }'+
- '                 }'+
- '               }'+
- '             }'+
- '           }'+
- '         }'+
- '       }'+
- '     }'+
- '   }'+
- ' }'+
-'}';
+const graphql = `query {
+  organization(login:"jenkinsci") {
+    project(number:3 ) {
+      columns (first:100) {
+        edges {
+          node {
+            id
+            cards {
+              edges {
+                node {
+                  content {
+                    ... on PullRequest {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
 
 /**
  * Get the content of the progress report

@@ -1,6 +1,8 @@
 /* eslint-env node */
 const axios = require('./axios');
 const axiosGH = require('axios');
+const {getArtifactIDFromPom} = require('./utils.js');
+
 const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
 const httpCache = {};
@@ -18,6 +20,13 @@ const graphql = `query {
                   content {
                     ... on PullRequest {
                       url
+                      baseRepository {
+                        object(expression: "master:pom.xml") {
+                          ... on Blob {
+                            text
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -92,13 +101,18 @@ async function getPulls( ) {
   const merged = columns[2].node.cards;
   const cardEdges = inProgress.edges.concat(merged.edges);
   const projectToPull = {};
-  cardEdges.forEach(function(edge) {
+  for (const edge of cardEdges) {
     const url = edge.node.content.url;
-    if (url) {
+    if (edge.node.content.baseRepository && edge.node.content.baseRepository.object && edge.node.content.baseRepository.object.text) {
+      const pluginName = await getArtifactIDFromPom(edge.node.content.baseRepository.object.text);
+      if (pluginName) {
+        projectToPull[pluginName] = url;
+      }
+    } else if (url) {
       const pluginName = url.replace(/^.*\/(.*)-plugin\/.*$/, '$1');
       projectToPull[pluginName] = url;
     }
-  });
+  }
   return projectToPull;
 }
 

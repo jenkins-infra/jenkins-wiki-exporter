@@ -9,7 +9,7 @@ const httpCache = {};
 const gitHubToken = process.env.GITHUB_TOKEN;
 const graphql = `query {
   organization(login:"jenkinsci") {
-    project(number:3 ) {
+    project(number:3) {
       columns (first:100) {
         edges {
           node {
@@ -102,9 +102,9 @@ async function getPulls( ) {
   const cardEdges = inProgress.edges.concat(merged.edges);
   const projectToPull = {};
   for (const edge of cardEdges) {
-    const url = edge.node.content.url;
-    if (edge.node.content.baseRepository && edge.node.content.baseRepository.object && edge.node.content.baseRepository.object.text) {
-      const pluginName = await getArtifactIDFromPom(edge.node.content.baseRepository.object.text);
+    const {url, baseRepository} = edge.node.content;
+    if (baseRepository && baseRepository.object && baseRepository.object.text) {
+      const pluginName = await getArtifactIDFromPom(baseRepository.object.text);
       if (pluginName) {
         projectToPull[pluginName] = url;
       }

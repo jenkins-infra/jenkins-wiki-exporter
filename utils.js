@@ -1,4 +1,5 @@
 /* eslint-env node */
+const parseXmlString = require('xml2js').parseStringPromise;
 const bunyan = require('bunyan');
 const axios = require('./axios');
 const {basename} = require('path');
@@ -241,6 +242,20 @@ function checkUrl(validWikiDomains, url) {
   return true;
 }
 
+/**
+ * Best effort to retrieve the artifactid from the project pom file
+ * @param {string} content pom.xml to parse
+ * @return {string} artifactId
+ */
+async function getArtifactIDFromPom(content) {
+  const xmlContent = await parseXmlString(content);
+  if (!xmlContent || !xmlContent['project'] || !xmlContent['project']['artifactId']) {
+    return null;
+  }
+  return xmlContent['project']['artifactId'][0];
+}
+
+
 module.exports = {
   checkUrl,
   convertBody,
@@ -252,4 +267,5 @@ module.exports = {
   getUrlAsStream,
   recordPandoc,
   replaceAsync,
+  getArtifactIDFromPom,
 };

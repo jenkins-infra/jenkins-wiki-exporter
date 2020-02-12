@@ -108,7 +108,8 @@ async function getPulls( ) {
       if (pluginName) {
         projectToPull[pluginName] = url;
       }
-    } else if (url) {
+    }
+    if (url) {
       const pluginName = url.replace(/^.*\/(.*)-plugin\/.*$/, '$1');
       projectToPull[pluginName] = url;
     }

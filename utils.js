@@ -96,22 +96,6 @@ async function replaceAsync(str, regex, asyncFn) {
 
 /**
  * Grabs the data from plugins.jenkins.io
- * @param {string} pluginName
- * @return {object}
- */
-async function getPluginData(pluginName) {
-  if (!pluginName) {
-    throw new Error('plugin name is required');
-  }
-
-  const url = 'https://plugins.jenkins.io/api/plugin/' + pluginName;
-  logger.info(`getting ${url}`);
-  return axios.get(url)
-      .then((resp) => resp.data);
-}
-
-/**
- * Grabs the data from plugins.jenkins.io
  * @param {string} url
  * @return {Stream}
  */
@@ -263,7 +247,6 @@ module.exports = {
   findImages,
   replaceConfluenceContent,
   getFormatType,
-  getPluginData,
   getUrlAsStream,
   recordPandoc,
   replaceAsync,

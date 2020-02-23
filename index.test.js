@@ -2,12 +2,20 @@
 const sut = require('./index.js');
 const MockExpressRequest = require('mock-express-request');
 const MockExpressResponse = require('mock-express-response');
-
-jest.mock('./utils.js', () => ({
-  ...require.requireActual('./utils.js'),
-  getPluginData: (pluginName) => {
+const mockWikiPrefix = 'https://wiki.jenkins.io/display/JENKINS/';
+jest.mock('./confluence.js', () => ({
+  ...require.requireActual('./confluence.js'),
+  getRawConfluenceContent: (url) => {
+    const pluginName = url.replace(mockWikiPrefix, '');
     return require('fs').promises.readFile(`__testData/${pluginName}.json`)
-        .then((buf) => JSON.parse(buf.toString()));
+        .then((buf) => JSON.parse(buf.toString()).wiki.content);
+  },
+}));
+
+jest.mock('./reports.js', () => ({
+  ...require.requireActual('./reports.js'),
+  getPluginWikiUrl: (pluginName) => {
+    return `${mockWikiPrefix}${pluginName}`;
   },
 }));
 
@@ -63,7 +71,7 @@ describe('/plugin/:pluginName', function() {
     await sut.requestPluginHandler(req, res);
     expect(res._getString()).toMatchSnapshot();
   });
-  it('markdown should return markdown', async () => {
+  it('adoc should return asciidoc', async () => {
     const req = {
       log: {
         debug: jest.fn(),

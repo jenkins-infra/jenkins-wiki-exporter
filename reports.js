@@ -87,6 +87,19 @@ async function pluginsReport() {
 }
 
 /**
+ * Gets documentation URL for a plugin from Update Center
+ * @param {string} pluginId plugin ID
+ * @return {string} documentation URL
+ */
+async function getPluginWikiUrl(pluginId) {
+  const documentation = await getContent(updatesUrl, 'json');
+  if (documentation[pluginId]) {
+    return documentation[pluginId].url.replace('//wiki.jenkins-ci.org', '//wiki.jenkins.io');
+  }
+  return '';
+}
+
+/**
  * Gets list of all unreleased pull requests from GitHub project
  * @return {object} map (plugin name) => url
  */
@@ -158,4 +171,5 @@ function lastReportDate() {
 
 module.exports = {
   pluginsReport,
+  getPluginWikiUrl,
 };

@@ -9,15 +9,15 @@ const {
   decodeEntities,
   findImages,
   getFormatType,
-  getPluginData,
   getUrlAsStream,
   recordPandoc,
   replaceAsync,
 } = require('./utils.js');
 const {
-  getConfluencePageFromId,
+  getRawConfluenceContent,
+  getContentFromConfluencePage,
 } = require('./confluence.js');
-const {pluginsReport} = require('./reports.js');
+const {pluginsReport, getPluginWikiUrl} = require('./reports.js');
 
 const validWikiDomains = [
   'wiki.jenkins-ci.org', // primary
@@ -78,6 +78,16 @@ function handleParams(req) {
 }
 
 /**
+ * Get the page id from a confluence page
+ * @param {string} url to look up
+ * @return {int} pageId
+ */
+async function getConfluencePageFromId(url) {
+  const fragment = await getRawConfluenceContent(url);
+  return getContentFromConfluencePage(url, fragment);
+}
+
+/**
  * Handles the /plugin/ action
  * @param {request} req
  * @param {response} res
@@ -85,9 +95,10 @@ function handleParams(req) {
 async function requestPluginHandler(req, res) {
   const {extension, archiveFormat} = handleParams(req);
 
-  const pluginData = await getPluginData(req.params.plugin);
-  checkUrl(validWikiDomains, pluginData.wiki.url);
-  return processContent(req, res, pluginData.wiki.content, extension, archiveFormat);
+  const pluginWikiUrl = await getPluginWikiUrl(req.params.plugin);
+  checkUrl(validWikiDomains, pluginWikiUrl);
+  const content = await getConfluencePageFromId(pluginWikiUrl);
+  return processContent(req, res, content, extension, archiveFormat);
 }
 
 /**

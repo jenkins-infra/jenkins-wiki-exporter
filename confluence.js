@@ -20,14 +20,14 @@ const confluence = new Confluence({
 });
 confluence.getContentByIdPromise = promisify(confluence.getContentById);
 
-/**
- * Get the page id from a confluence page
- * @param {string} url to look up
- * @return {int} pageId
- */
-async function getConfluencePageFromId(url) {
-  logger.info('getConfluencePageFromId: looking up ' + url);
 
+/**
+ * Get the content part of Confluence page, without URL processing
+ * @param {string} url confluence url
+ * @return {string} content
+ */
+async function getRawConfluenceContent(url) {
+  logger.info('getRawConfluenceContent: looking up ' + url);
   const body = await axios.get(url).then((response) => response.data);
   const domParser = new DomParser();
   const dom = domParser.parseFromString(body);
@@ -39,7 +39,7 @@ async function getConfluencePageFromId(url) {
   if (!pageId) {
     throw new Error('No page id found');
   }
-  return getContentFromConfluencePage(url, body);
+  return cheerio.load(body)('.wiki-content').html();
 }
 
 /**
@@ -47,12 +47,11 @@ async function getConfluencePageFromId(url) {
  * Remove's some content that we don't want
  *
  * @param {*} url confluence url
- * @param {*} content page content
+ * @param {*} fragment relevant part of page content
  * @return {string} processed html
  */
-function getContentFromConfluencePage(url, content) {
-  const $ = cheerio.load(cheerio.load(content)('.wiki-content').html());
-
+function getContentFromConfluencePage(url, fragment) {
+  const $ = cheerio.load(fragment);
   $('.conf-macro.output-inline th:contains("Plugin Information")').parents('table').remove();
 
   // Remove any table of contents
@@ -63,11 +62,12 @@ function getContentFromConfluencePage(url, content) {
     $(elm).attr('href', URL.resolve(url, $(elm).attr('href')));
   });
   $('[src]').each((idx, elm) => {
-    $(elm).attr('src', URL.resolve(url, $(elm).attr('src')));
+    $(elm).attr('src', URL.resolve(url, $(elm).attr('data-image-src') || $(elm).attr('src')));
   });
   return $.html();
 }
 
 module.exports = {
-  getConfluencePageFromId,
+  getRawConfluenceContent,
+  getContentFromConfluencePage,
 };

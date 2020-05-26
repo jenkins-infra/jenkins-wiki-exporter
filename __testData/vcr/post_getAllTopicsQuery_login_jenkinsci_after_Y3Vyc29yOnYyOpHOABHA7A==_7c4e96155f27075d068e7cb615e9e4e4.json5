@@ -1,0 +1,1331 @@
+{
+    meta: {
+        createdAt: '2020-05-25T00:00:00.000Z',
+        host: 'https://api.github.com',
+        reqHumanReadable: true,
+        resHumanReadable: true,
+        resUncompressed: true,
+    },
+    req: {
+        url: '/graphql',
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            accept: '*/*',
+            'user-agent': 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)',
+            'accept-encoding': 'gzip,deflate',
+            connection: 'close',
+        },
+        body: {
+            query: '\nquery getAllTopicsQuery($login: String!, $after: String) {\n  organization(login: $login) {\n    repositories(first: 100, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      edges {\n        node {\n          isArchived\n          url\n          repositoryTopics(first: 100) {\n            edges {\n              node {\n                topic {\n                  name\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n',
+            variables: {
+                login: 'jenkinsci',
+                after: 'Y3Vyc29yOnYyOpHOABHA7A==',
+            },
+        },
+    },
+    res: {
+        status: 200,
+        headers: {
+            server: [
+                'GitHub.com',
+            ],
+            date: [
+                'Tue, 26 May 2020 07:03:02 GMT',
+            ],
+            'content-type': [
+                'application/json; charset=utf-8',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+            connection: [
+                'close',
+            ],
+            status: [
+                '200 OK',
+            ],
+            'cache-control': [
+                'no-cache',
+            ],
+            'x-oauth-scopes': [
+                'public_repo, read:org',
+            ],
+            'x-accepted-oauth-scopes': [
+                'repo',
+            ],
+            'x-github-media-type': [
+                'github.v4; format=json',
+            ],
+            'x-ratelimit-limit': [
+                '5000',
+            ],
+            'x-ratelimit-remaining': [
+                '4904',
+            ],
+            'x-ratelimit-reset': [
+                '1590477189',
+            ],
+            'access-control-expose-headers': [
+                'ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'strict-transport-security': [
+                'max-age=31536000; includeSubdomains; preload',
+            ],
+            'x-frame-options': [
+                'deny',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-xss-protection': [
+                '1; mode=block',
+            ],
+            'referrer-policy': [
+                'origin-when-cross-origin, strict-origin-when-cross-origin',
+            ],
+            'content-security-policy': [
+                "default-src 'none'",
+            ],
+            vary: [
+                'Accept-Encoding, Accept, X-Requested-With',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'x-github-request-id': [
+                'E16C:3E35:62C0B1:AA3E01:5ECCBF26',
+            ],
+        },
+        body: {
+            data: {
+                organization: {
+                    repositories: {
+                        pageInfo: {
+                            hasNextPage: true,
+                            endCursor: 'Y3Vyc29yOnYyOpHOABHBcA==',
+                        },
+                        edges: [
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/deploy-websphere-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/dimensions-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/crap4j-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/cobertura-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/distTest-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/cvs-tag-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/dashboard-view-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/distfork-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/cvs-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/dependency-analyzer-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/doclinks-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/dos-trigger-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/downstream-buildview-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/description-setter-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/deploy-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/cppunit-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/checkstyle-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'deprecated',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/downstream-ext-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/disk-usage-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/drools-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/exclusive-execution-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/easyant-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/extended-read-permission-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'permissions',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'advanced',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/doxygen-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/favorite-view-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/dimensionsscm-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'microfocus',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'scm',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/extended-choice-parameter-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/envfile-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/clearcase-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/emotional-hudson-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/filesystem_scm-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-scm',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-me',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'filesystem',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/favorite-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'ui',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'misc',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/files-found-trigger-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gcrawler-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/flexteam-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/fit-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/email-ext-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-builder',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'email',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/fitnesse-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/github-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'github',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'java',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'hpi',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gant-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/google-desktop-gadget-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/fortify360-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/ftppublisher-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/global-build-stats-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gallio-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gcal-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/emma-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/googleanalytics-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/growl-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/heavy-job-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gradle-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-gradle-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/gnat-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/grinder-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/greenballs-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/groovy-postbuild-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/googlecode-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/harvest-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/iphoneview-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/ipmsg-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/hgca-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/grails-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/hadoop-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/hello-world-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/instant-messaging-parent-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/hello-world-groovy-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/htmlpublisher-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javanet-realm-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/groovy-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jira-issues-versioning-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jboss-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/instant-messaging-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javancss-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javanet-trigger-installer-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/japex-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/job-exporter-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jobinjector-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jmx-invoker-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jmx-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javatest-report-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jdepend-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jobtype-column-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jquery-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-api-plugin',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javanet-uploader-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jquery-ui-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'adopt-this-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'deprecated',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jobrevision-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jsgames-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/javanet-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/ircbot-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jobConfigHistory-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jprt-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/ivy-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jython-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jabber-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jswidgets-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jira-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'atlassian',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jira',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/label-verifier-plugin',
+                                    repositoryTopics: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins-plugin',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'agent',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'administration',
+                                                    },
+                                                },
+                                            },
+                                            {
+                                                node: {
+                                                    topic: {
+                                                        name: 'jenkins',
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/join-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jwsdp-sqe-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/kagemai-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                            {
+                                node: {
+                                    isArchived: false,
+                                    url: 'https://github.com/jenkinsci/jsunit-plugin',
+                                    repositoryTopics: {
+                                        edges: [],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+    },
+}

@@ -4,6 +4,7 @@ const {
   checkUrl,
   replaceConfluenceContent,
   getArtifactIDFromPom,
+  pluginNameFromUrl,
 } = require('./utils.js');
 
 const fs = require('fs');
@@ -106,6 +107,15 @@ describe('utils', function() {
     const input = fs.readFileSync('test-data/with-classes.html', 'utf8');
     const expected = fs.readFileSync('test-data/with-classes-removed.html', 'utf8');
     expect(replaceConfluenceContent(input)).toBe(expected);
+  });
+  describe.each([
+    ['https://github.com/jenkinsci/cloudbees-disk-usage-simple-plugin/pull/28', 'cloudbees-disk-usage-simple'],
+    ['https://github.com/jenkinsci/groovy', 'groovy'],
+    ['https://github.com/jenkinsci/backend-pull-request-greeter', 'backend-pull-request-greeter'],
+  ])('pluginNameFromUrl(%s)', (url, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(pluginNameFromUrl(url)).toBe(expected);
+    });
   });
 });
 

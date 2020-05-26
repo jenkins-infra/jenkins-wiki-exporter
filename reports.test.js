@@ -58,7 +58,7 @@ describe('reports', function() {
         'className': 'success',
         'installs': '3670',
         'name': 'android-lint',
-        'status': 'deprecated
+        'status': 'deprecated',
         'url': 'https://wiki.jenkins-ci.org/display/JENKINS/Android+Lint+Plugin',
       });
     });

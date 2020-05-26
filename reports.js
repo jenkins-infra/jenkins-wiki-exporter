@@ -29,12 +29,12 @@ async function pluginsReport() {
     const url = plugin.url || '';
     plugin.name = key;
     plugin.installs = plugin.installs || 0;
-    if (isTombstoned[key]) {
-      plugin.status = 'TOMBSTONED';
-      plugin.className = 'success';
-    } else if (url.match('https?://github.com/jenkinsci/')) {
+    if (url.match('https?://github.com/jenkinsci/')) {
       plugin.status = 'OK';
       plugin.className = 'success';
+    } else if (isTombstoned[key]) {
+      plugin.status = 'deprecated';
+      plugin.className = 'dark';
     } else if (pulls[key]) {
       plugin.status = 'PR';
       plugin.className = 'info';

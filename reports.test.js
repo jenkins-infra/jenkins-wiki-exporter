@@ -51,21 +51,21 @@ describe('reports', function() {
     beforeAll( async () => {
       this.reportData = await pluginsReport();
     });
-    it('should mark android-lint as TOMBSTONED', () => {
+    it('should mark android-lint as deprecated', () => {
       expect(this.reportData.plugins.find(
           (plugin) => plugin.name == 'android-lint',
       )).toEqual({
         'className': 'success',
         'installs': '3670',
         'name': 'android-lint',
-        'status': 'TOMBSTONED',
+        'status': 'deprecated
         'url': 'https://wiki.jenkins-ci.org/display/JENKINS/Android+Lint+Plugin',
       });
     });
     it('have all the statuses ', () => {
       expect(this.reportData.statuses).toHaveProperty('ok');
       expect(this.reportData.statuses).toHaveProperty('pr');
-      expect(this.reportData.statuses).toHaveProperty('tombstoned');
+      expect(this.reportData.statuses).toHaveProperty('deprecated');
       expect(this.reportData.statuses).toHaveProperty('todo');
       expect(this.reportData.statuses).toHaveProperty('total');
     });

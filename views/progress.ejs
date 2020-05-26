@@ -5,7 +5,7 @@
     <div class="container">
       <%- include('navigation'); %>
       <h1>Plugin Migration Progress</h1>
-      <p>Todo: <%= statuses.todo %>, PR: <%= statuses.pr %>, Done: <%= statuses.ok + statuses.tombstoned %>, Total: <%= statuses.total %></p>
+      <p>Todo: <%= statuses.todo %>, PR: <%= statuses.pr %>, Done: <%= statuses.ok + statuses.deprecated %>, Total: <%= statuses.total %></p>
 
       <table class="table table-bordered table-hover" data-sortable="true" data-sort-name="installs" data-sort-order="desc"  data-toggle="table">
         <thead class="thead-dark">

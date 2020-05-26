@@ -34,7 +34,7 @@ async function pluginsReport() {
       plugin.className = 'success';
     } else if (isTombstoned[key]) {
       plugin.status = 'deprecated';
-      plugin.className = 'dark';
+      plugin.className = 'success';
     } else if (pulls[key]) {
       plugin.status = 'PR';
       plugin.className = 'info';

@@ -4,7 +4,7 @@ const MockExpressRequest = require('mock-express-request');
 const MockExpressResponse = require('mock-express-response');
 const mockWikiPrefix = 'https://wiki.jenkins.io/display/JENKINS/';
 jest.mock('./confluence.js', () => ({
-  ...require.requireActual('./confluence.js'),
+  ...jest.requireActual('./confluence.js'),
   getRawConfluenceContent: (url) => {
     const pluginName = url.replace(mockWikiPrefix, '');
     return require('fs').promises.readFile(`__testData/${pluginName}.json`)
@@ -13,7 +13,7 @@ jest.mock('./confluence.js', () => ({
 }));
 
 jest.mock('./reports.js', () => ({
-  ...require.requireActual('./reports.js'),
+  ...jest.requireActual('./reports.js'),
   getPluginWikiUrl: (pluginName) => {
     return `${mockWikiPrefix}${pluginName}`;
   },

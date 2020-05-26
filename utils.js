@@ -239,6 +239,37 @@ async function getArtifactIDFromPom(content) {
   return xmlContent['project']['artifactId'][0];
 }
 
+const httpCache = {};
+/**
+ * Returns response from cache, updates cache if required.
+ * @param {string} url
+ * @param {function} callback update callback
+ * @return {object} JSON object or string
+ */
+async function getCached(url, callback) {
+  const now = new Date().getTime();
+  if (httpCache[url] && httpCache[url].timestamp > now - 60 * 60 * 1000) {
+    return httpCache[url].data;
+  }
+  return callback().then(function(response) {
+    httpCache[url] = {'data': response, 'timestamp': new Date().getTime()};
+    return response;
+  });
+}
+
+/**
+ * Strips out all the extra github url type stuff and returns the plugin name from github
+ * @param {string} url
+ * @return {string} plugin name
+ */
+function pluginNameFromUrl(url) {
+  if (url.startsWith('https://github.com/jenkinsci/')) {
+    const [section] = url.replace('https://github.com/jenkinsci/', '').split('/');
+    return section.replace(/-plugin$/, '');
+  }
+  return url.replace(/(?:.*\/)?([^/]*)-plugin(?:\/.*)?$/, '$1');
+}
+
 
 module.exports = {
   checkUrl,
@@ -251,4 +282,6 @@ module.exports = {
   recordPandoc,
   replaceAsync,
   getArtifactIDFromPom,
+  getCached,
+  pluginNameFromUrl,
 };

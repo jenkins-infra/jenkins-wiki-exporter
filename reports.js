@@ -1,50 +1,19 @@
 /* eslint-env node */
 const axios = require('./axios');
-const axiosGH = require('axios');
-const {getArtifactIDFromPom} = require('./utils.js');
+const {getPullRequests, getAllTopics} = require('./graphql.js');
+const {getArtifactIDFromPom, getCached, pluginNameFromUrl} = require('./utils.js');
 
 const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
-const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
-const httpCache = {};
-const gitHubToken = process.env.GITHUB_TOKEN;
-const graphql = `query {
-  organization(login:"jenkinsci") {
-    project(number:3) {
-      columns (first:100) {
-        edges {
-          node {
-            id
-            cards {
-              edges {
-                node {
-                  content {
-                    ... on PullRequest {
-                      url
-                      baseRepository {
-                        object(expression: "master:pom.xml") {
-                          ... on Blob {
-                            text
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}`;
 
 /**
  * Get the content of the progress report
  * @return {array} of objects representing table rows
  */
 async function pluginsReport() {
-  const pulls = await getPulls();
+  const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
+
+  const pulls = await getCached('get-pulls', () => getPulls());
+  const isTombstoned = await getCached('get-tombstoned-repos', () => getTombstonedRepos());
   const documentation = await getContent(updatesUrl, 'json');
   const installs = await getContent(installsUrl, 'blob');
   const lines = installs.split('\n');
@@ -60,7 +29,10 @@ async function pluginsReport() {
     const url = plugin.url || '';
     plugin.name = key;
     plugin.installs = plugin.installs || 0;
-    if (url.match('https?://github.com/jenkinsci/')) {
+    if (isTombstoned[key]) {
+      plugin.status = 'TOMBSTONED';
+      plugin.className = 'success';
+    } else if (url.match('https?://github.com/jenkinsci/')) {
       plugin.status = 'OK';
       plugin.className = 'success';
     } else if (pulls[key]) {
@@ -104,12 +76,8 @@ async function getPluginWikiUrl(pluginId) {
  * @return {object} map (plugin name) => url
  */
 async function getPulls( ) {
-  const data = await getCached('github-project', function() {
-    const github = axiosGH.create({headers: {'Authorization': `bearer ${gitHubToken}`}});
-    return github.post('https://api.github.com/graphql', {query: graphql});
-  });
-
-  const columns = data.data.organization.project.columns.edges;
+  const data = await getPullRequests();
+  const columns = data.organization.project.columns.edges;
   const inProgress = columns[1].node.cards;
   const merged = columns[2].node.cards;
   const cardEdges = inProgress.edges.concat(merged.edges);
@@ -123,11 +91,39 @@ async function getPulls( ) {
       }
     }
     if (url) {
-      const pluginName = url.replace(/^.*\/(.*)-plugin\/.*$/, '$1');
+      const pluginName = pluginNameFromUrl(url);
       projectToPull[pluginName] = url;
     }
   }
   return projectToPull;
+}
+
+/**
+ * Get all labels for all repos
+ * @return {object} repo => [labels]
+ */
+async function getTombstonedRepos() {
+  const repos = {};
+  let after = null;
+  do {
+    const {organization: {repositories: {pageInfo, edges}}} = await getAllTopics(after);
+    after = pageInfo.endCursor;
+    edges.forEach(({node}) => {
+      if (node.isArchived) {
+        repos[pluginNameFromUrl(node.url)] = true;
+        return;
+      }
+      if (node.repositoryTopics.edges.find(({node: topicNode}) => topicNode.topic.name === 'deprecated')) {
+        repos[pluginNameFromUrl(node.url)] = true;
+        return;
+      }
+    });
+
+    if (!pageInfo.hasNextPage) {
+      break;
+    }
+  } while (1);
+  return repos;
 }
 
 /**
@@ -137,24 +133,10 @@ async function getPulls( ) {
  * @return {object} JSON object or string
  */
 async function getContent(url, type) {
-  return getCached(url, () => axios.get(url, {'type': type}));
-}
-
-/**
- * Returns response from cache, updates cache if required.
- * @param {string} url
- * @param {function} callback update callback
- * @return {object} JSON object or string
- */
-async function getCached(url, callback) {
-  const now = new Date().getTime();
-  if (httpCache[url] && httpCache[url].timestamp > now - 60 * 60 * 1000) {
-    return httpCache[url].data;
-  }
-  return callback().then(function(response) {
-    httpCache[url] = {'data': response.data, 'timestamp': new Date().getTime()};
-    return response.data;
-  });
+  return getCached(
+      url,
+      () => axios.get(url, {'type': type}).then((response) => response.data),
+  );
 }
 
 /**

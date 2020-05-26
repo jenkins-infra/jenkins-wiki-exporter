@@ -1,5 +1,5 @@
 {
-  "name": "confluence-to-md-web",
+  "name": "jenkins-wiki-exporter",
   "version": "1.10.0",
   "description": "",
   "main": "index.js",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/halkeye/confluence-to-md-web.git"
+    "url": "git+https://github.com/jenkins-infra/jenkins-wiki-exporter/.git"
   },
   "author": "Gavin Mogan <npm@gavinmogan.com> (https://www.gavinmogan.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/halkeye/confluence-to-md-web/issues"
+    "url": "https://github.com/jenkins-infra/jenkins-wiki-exporter/issues"
   },
-  "homepage": "https://github.com/halkeye/confluence-to-md-web#readme",
+  "homepage": "https://github.com/jenkins-infra/jenkins-wiki-exporter#readme",
   "dependencies": {
     "archiver": "^4.0.1",
     "axios": "^0.19.2",

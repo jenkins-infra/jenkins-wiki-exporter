@@ -55,6 +55,11 @@ app.get('/progress', async function(req, res) {
   res.render('progress', report);
 });
 
+app.get('/progress.json', async function(req, res) {
+  const report = await pluginsReport();
+  res.json(report);
+});
+
 app.get('/', function(req, res) {
   res.render('index');
 });

@@ -38,7 +38,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "eslint": "^7.1.0",
+    "eslint": "^7.2.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^26.0.1",
     "mock-express-request": "^0.2.2",

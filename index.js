@@ -1,4 +1,5 @@
 /* eslint-env node */
+const Sentry = require('@sentry/node');
 const expressBunyanLogger = require('express-bunyan-logger');
 const archiver = require('archiver');
 const {basename} = require('path');
@@ -34,11 +35,17 @@ const supportedArchiveFormats = [
 const express = require('express');
 const app = express();
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+});
+
 const wrap = (fn) => (...args) => fn(...args).catch(args[2]);
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.set('trust proxy', 1); // trust first proxy
 
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
 app.use(expressBunyanLogger());
 
 app.use(express.static('public'));
@@ -172,7 +179,7 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
         });
         return val.replace(grab, `${dir}${filename}`);
       } catch (e) {
-        // FIXME - sentry.captureException(e);
+        Sentry.captureException(e);
         req.log.error(e);
         return val;
       }
@@ -181,14 +188,15 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
       content: Buffer.from(content),
       filename: 'README.' + extension,
     });
-    for (const file of files) {
+    files.forEach((file) => {
       archive.append(file.content, {name: file.filename});
-    }
+    });
     archive.on('error', function(err) {
-      throw err;
+      Sentry.captureException(err);
+      req.log.error(err);
     });
     archive.on('warning', function(err) {
-      throw err;
+      Sentry.captureException(err);
     });
     res.attachment(`${req.params.plugin}.${archiveFormat}`).type(archiveFormat);
     archive.on('end', () => res.end()); // end response when archive stream ends
@@ -202,7 +210,10 @@ async function processContent(req, res, wikiContent, extension, archiveFormat) {
 app.get('/plugin/:plugin([^\\.]+)\.?:format?', wrap(requestPluginHandler));
 app.get('/confluence-url/:plugin([^\\.]+)\.?:format?', wrap(requestConfluenceUrlHandler));
 
-app.use(function(err, req, res, next) {
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+app.use(function onError(err, req, res, next) {
   req.log.error(err.stack);
   res.status(err.code || 500).send(err.message);
 });

@@ -24,7 +24,7 @@
   "homepage": "https://github.com/jenkins-infra/jenkins-wiki-exporter#readme",
   "dependencies": {
     "@sentry/node": "^5.20.1",
-    "archiver": "^4.0.1",
+    "archiver": "^5.0.0",
     "axios": "^0.19.2",
     "bunyan": "^1.8.14",
     "cheerio": "^1.0.0-rc.3",

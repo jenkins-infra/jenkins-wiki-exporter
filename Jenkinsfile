@@ -6,6 +6,7 @@ if (JENKINS_URL.contains('infra.ci.jenkins.io')) {
 
 if (JENKINS_URL.contains('ci.jenkins.io')) {
   node('docker&&linux') {
+    checkout scm
     sh "docker build ."
   }
   return;

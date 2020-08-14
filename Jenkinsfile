@@ -1,7 +1,14 @@
 #!/usr/bin/groovy
-if (JENKINS_URL == 'https://ci.g4v.dev/') {
-  @Library('github.com/halkeye/jenkins-shared-library@master') _
-  buildDockerfile('halkeye/jenkins-wiki-exporter')
-  return
+if (JENKINS_URL.contains('infra.ci.jenkins.io')) {
+  buildDockerAndPublishImage('jenkins-wiki-exporter')
+  return;
 }
-buildDockerImage('jenkins-wiki-exporter')
+
+if (JENKINS_URL.contains('ci.jenkins.io')) {
+  node('docker&&linux') {
+    checkout scm
+    sh "docker build ."
+  }
+  return;
+}
+

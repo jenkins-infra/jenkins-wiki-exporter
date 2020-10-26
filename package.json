@@ -25,7 +25,7 @@
   "dependencies": {
     "@sentry/node": "^5.26.0",
     "archiver": "^5.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "bunyan": "^1.8.14",
     "cheerio": "^1.0.0-rc.3",
     "confluence-api": "^1.4.0",

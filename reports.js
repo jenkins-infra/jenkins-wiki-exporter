@@ -1,44 +1,45 @@
 /* eslint-env node */
 const axios = require('./axios');
-const {getPullRequests, getAllTopics} = require('./graphql.js');
-const {getArtifactIDFromPom, getCached, pluginNameFromUrl} = require('./utils.js');
+const {getPullRequests} = require('./graphql.js');
+const {getCached, pluginNamesFromUrl} = require('./utils.js');
 
-const updatesUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
+const docsUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 
 /**
  * Get the content of the progress report
  * @return {array} of objects representing table rows
  */
 async function pluginsReport() {
-  const installsUrl = 'https://stats.jenkins.io/jenkins-stats/svg/' + lastReportDate() + '-plugins.csv';
+  const updateCenterUrl = 'http://updates.jenkins.io/current/update-center.actual.json';
 
-  const pulls = await getCached('get-pulls', () => getPulls());
-  const isTombstoned = await getCached('get-tombstoned-repos', () => getTombstonedRepos());
-  const documentation = await getContent(updatesUrl, 'json');
-  const installs = await getContent(installsUrl, 'blob');
-  const lines = installs.split('\n');
-  lines.forEach(function(line) {
-    const nameAndValue = JSON.parse('[' + line + ']');
-    const plugin = documentation[nameAndValue[0]] || {};
-    plugin.installs = nameAndValue[1];
-  });
 
+  const documentation = await getContent(docsUrl, 'json');
+  const uc = await getContent(updateCenterUrl, 'json');
+  const pulls = await getCached('get-pulls', () => getPulls(uc.plugins));
   const report = [];
-  Object.keys(documentation).forEach(function(key) {
-    const plugin = documentation[key];
-    const url = plugin.url || '';
+  const recent = [];
+  Object.keys(uc.plugins).forEach(function(key) {
+    const plugin = uc.plugins[key];
+    const url = documentation[key].url || '';
     plugin.name = key;
-    plugin.installs = plugin.installs || 0;
+    plugin.installs = plugin.popularity || 0;
     if (url.match('https?://github.com/jenkinsci/')) {
       plugin.status = 'OK';
       plugin.className = 'success';
-    } else if (isTombstoned[key]) {
+      if (pulls['merged'][key]) {
+        recent.push(key);
+      }
+    } else if (plugin.labels.indexOf('deprecated') >= 0) {
       plugin.status = 'deprecated';
       plugin.className = 'success';
-    } else if (pulls[key]) {
-      plugin.status = 'PR';
+    } else if (pulls['merged'][key]) {
+      plugin.status = 'PR merged';
       plugin.className = 'info';
-      plugin.action = pulls[key];
+      plugin.action = pulls['merged'][key];
+    } else if (pulls['open'][key]) {
+      plugin.status = 'PR open';
+      plugin.className = 'info';
+      plugin.action = pulls['open'][key];
     } else {
       plugin.status = 'TODO';
       plugin.action = '/?pluginName=' + plugin.name;
@@ -55,6 +56,7 @@ async function pluginsReport() {
   return {
     plugins: report,
     statuses,
+    recent,
   };
 }
 
@@ -64,7 +66,7 @@ async function pluginsReport() {
  * @return {string} documentation URL
  */
 async function getPluginWikiUrl(pluginId) {
-  const documentation = await getContent(updatesUrl, 'json');
+  const documentation = await getContent(docsUrl, 'json');
   if (documentation[pluginId]) {
     return documentation[pluginId].url.replace('//wiki.jenkins-ci.org', '//wiki.jenkins.io');
   }
@@ -73,57 +75,39 @@ async function getPluginWikiUrl(pluginId) {
 
 /**
  * Gets list of all unreleased pull requests from GitHub project
- * @return {object} map (plugin name) => url
+ * @param {plugins} plugins map (plugin name) => plugin properties (see update-center.actual.json)
+ * @return {object} nested map (state) => (plugin name) => url
  */
-async function getPulls( ) {
+async function getPulls(plugins) {
+  const repoToPlugins = {};
+  Object.keys(plugins).forEach(function(key) {
+    const scm = plugins[key].scm;
+    repoToPlugins[scm] = repoToPlugins[scm] || [];
+    repoToPlugins[scm].push(key);
+  });
   const data = await getPullRequests();
   const columns = data.organization.project.columns.edges;
-  const inProgress = columns[1].node.cards;
-  const merged = columns[2].node.cards;
-  const cardEdges = inProgress.edges.concat(merged.edges);
-  const projectToPull = {};
-  for (const edge of cardEdges) {
-    const {url, baseRepository} = edge.node.content;
-    if (baseRepository && baseRepository.object && baseRepository.object.text) {
-      const pluginName = await getArtifactIDFromPom(baseRepository.object.text);
-      if (pluginName) {
-        projectToPull[pluginName] = url;
-      }
-    }
-    if (url) {
-      const pluginName = pluginNameFromUrl(url);
-      projectToPull[pluginName] = url;
-    }
-  }
-  return projectToPull;
+  return {'open': await getPullMap(columns[1], repoToPlugins), 'merged': await getPullMap(columns[2], repoToPlugins)};
 }
 
 /**
- * Get all labels for all repos
- * @return {object} repo => [labels]
+ * Gets PRs for one column
+ * @param {object} column from GraphQL
+ * @param {object} repoToPlugins map (repo URL) => list of plugin IDs
+ * @return {object} map (plugin name) => url
  */
-async function getTombstonedRepos() {
-  const repos = {};
-  let after = null;
-  do {
-    const {organization: {repositories: {pageInfo, edges}}} = await getAllTopics(after);
-    after = pageInfo.endCursor;
-    edges.forEach(({node}) => {
-      if (node.isArchived) {
-        repos[pluginNameFromUrl(node.url)] = true;
-        return;
-      }
-      if (node.repositoryTopics.edges.find(({node: topicNode}) => topicNode.topic.name === 'deprecated')) {
-        repos[pluginNameFromUrl(node.url)] = true;
-        return;
-      }
-    });
-
-    if (!pageInfo.hasNextPage) {
-      break;
+async function getPullMap(column, repoToPlugins) {
+  const projectToPull = {};
+  for (const edge of column.node.cards.edges) {
+    const {url} = edge.node.content;
+    if (url) {
+      const pluginNames = pluginNamesFromUrl(url, repoToPlugins);
+      pluginNames.forEach(function(pluginName) {
+        projectToPull[pluginName] = url;
+      });
     }
-  } while (1);
-  return repos;
+  }
+  return projectToPull;
 }
 
 /**
@@ -137,18 +121,6 @@ async function getContent(url, type) {
       url,
       () => axios.get(url, {'type': type}).then((response) => response.data),
   );
-}
-
-/**
- * @return {string} last month date as yyyymm
- */
-function lastReportDate() {
-  const reportDate = new Date();
-  // needs a bit more than a month https://github.com/jenkins-infra/infra-statistics/blob/master/Jenkinsfile#L18
-  reportDate.setDate(reportDate.getDate() - 35);
-  const month = reportDate.getMonth() + 1; // January: 0 -> 1
-  const monthStr = month.toString().padStart(2, '0');
-  return reportDate.getFullYear() + monthStr;
 }
 
 module.exports = {

@@ -1,34 +1,6 @@
 /* eslint-env node */
 const {GraphQLClient} = require('graphql-request');
 
-const getAllTopicsQuery = `
-query getAllTopicsQuery($login: String!, $after: String) {
-  organization(login: $login) {
-    repositories(first: 100, after: $after) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          isArchived
-          url
-          repositoryTopics(first: 100) {
-            edges {
-              node {
-                topic {
-                  name
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-`;
-
 const getPullRequestsQuery = `
 query getPullRequests($login: String!) {
   organization(login: $login) {
@@ -43,13 +15,6 @@ query getPullRequests($login: String!) {
                   content {
                     ... on PullRequest {
                       url
-                      baseRepository {
-                        object(expression: "master:pom.xml") {
-                          ... on Blob {
-                            text
-                          }
-                        }
-                      }
                     }
                   }
                 }
@@ -91,22 +56,6 @@ async function getPullRequests() {
   );
 }
 
-/**
- * Gets labels for all repos (paginated)
- *  @param {string} after pagination
- * @return {object}
- */
-async function getAllTopics(after) {
-  return getGithubClient().request(
-      getAllTopicsQuery,
-      {
-        login: 'jenkinsci',
-        after: after,
-      },
-  );
-}
-
 module.exports = {
   getPullRequests,
-  getAllTopics,
 };

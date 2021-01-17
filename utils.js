@@ -1,5 +1,4 @@
 /* eslint-env node */
-const parseXmlString = require('xml2js').parseStringPromise;
 const bunyan = require('bunyan');
 const axios = require('./axios');
 const {basename} = require('path');
@@ -226,19 +225,6 @@ function checkUrl(validWikiDomains, url) {
   return true;
 }
 
-/**
- * Best effort to retrieve the artifactid from the project pom file
- * @param {string} content pom.xml to parse
- * @return {string} artifactId
- */
-async function getArtifactIDFromPom(content) {
-  const xmlContent = await parseXmlString(content);
-  if (!xmlContent || !xmlContent['project'] || !xmlContent['project']['artifactId']) {
-    return null;
-  }
-  return xmlContent['project']['artifactId'][0];
-}
-
 const httpCache = {};
 /**
  * Returns response from cache, updates cache if required.
@@ -260,14 +246,13 @@ async function getCached(url, callback) {
 /**
  * Strips out all the extra github url type stuff and returns the plugin name from github
  * @param {string} url
+ * @param {object} repoToPlugins map repo URL to list of plugin IDs
  * @return {string} plugin name
  */
-function pluginNameFromUrl(url) {
-  if (url.startsWith('https://github.com/jenkinsci/')) {
-    const [section] = url.replace('https://github.com/jenkinsci/', '').split('/');
-    return section.replace(/-plugin$/, '');
-  }
-  return url.replace(/(?:.*\/)?([^/]*)-plugin(?:\/.*)?$/, '$1');
+function pluginNamesFromUrl(url, repoToPlugins) {
+  const match = url.match(/https?:\/\/github.com\/([^/]*)\/([^/.]*)/);
+  const byUrl = repoToPlugins[match[0]];
+  return byUrl ? byUrl : [match[2].replace(/-plugin$/, '')];
 }
 
 
@@ -281,7 +266,6 @@ module.exports = {
   getUrlAsStream,
   recordPandoc,
   replaceAsync,
-  getArtifactIDFromPom,
   getCached,
-  pluginNameFromUrl,
+  pluginNamesFromUrl,
 };

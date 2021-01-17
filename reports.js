@@ -10,7 +10,7 @@ const docsUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
  * @return {array} of objects representing table rows
  */
 async function pluginsReport() {
-  const updateCenterUrl = 'http://updates.jenkins.io/current/update-center.actual.json';
+  const updateCenterUrl = 'https://updates.jenkins.io/current/update-center.actual.json';
 
 
   const documentation = await getContent(docsUrl, 'json');

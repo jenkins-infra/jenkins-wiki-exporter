@@ -64,7 +64,8 @@ describe('reports', function() {
     });
     it('have all the statuses ', () => {
       expect(this.reportData.statuses).toHaveProperty('ok');
-      expect(this.reportData.statuses).toHaveProperty('pr');
+      expect(this.reportData.statuses).toHaveProperty('pr merged');
+      expect(this.reportData.statuses).toHaveProperty('pr open');
       expect(this.reportData.statuses).toHaveProperty('deprecated');
       expect(this.reportData.statuses).toHaveProperty('todo');
       expect(this.reportData.statuses).toHaveProperty('total');

@@ -5,7 +5,7 @@
     <div class="container">
       <%- include('navigation'); %>
       <h1>Plugin Migration Progress</h1>
-      <p>Todo: <%= statuses.todo %>, PR: <%= statuses.pr %>, Done: <%= statuses.ok + statuses.deprecated %>, Total: <%= statuses.total %></p>
+      <p>Todo: <%= statuses.todo %>, PR open: <%= statuses["pr open"] %>, PR merged: <%= statuses["pr merged"] %>, Done: <%= statuses.ok + statuses.deprecated %>, Total: <%= statuses.total %></p>
 
       <table class="table table-bordered table-hover" data-sortable="true" data-sort-name="installs" data-sort-order="desc"  data-toggle="table">
         <thead class="thead-dark">
@@ -31,7 +31,12 @@
         </tr>
       <% }); %>
       </table>
+      <% if (recent.length) { %>
+      <h3 class="mt-3">Recently merged</h3>
+      <%= recent.join(", ") %>
+      <% } %>
     </div>
+
 
     <link rel="stylesheet" href="/vendor/bootstrap-table.min.css" />
 

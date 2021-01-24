@@ -246,10 +246,10 @@ async function getCached(url, callback) {
 /**
  * Strips out all the extra github url type stuff and returns the plugin name from github
  * @param {string} url
- * @param {object} repoToPlugins map repo URL to list of plugin IDs
+ * @param {object} repoToPlugins maps repo URLs to lists of plugin IDs
  * @return {string} plugin name
  */
-function pluginNamesFromUrl(url, repoToPlugins) {
+function getAllPluginNamesForRepo(url, repoToPlugins) {
   const match = url.match(/https?:\/\/github.com\/([^/]*)\/([^/.]*)/);
   const byUrl = repoToPlugins[match[0]];
   return byUrl ? byUrl : [match[2].replace(/-plugin$/, '')];
@@ -267,5 +267,5 @@ module.exports = {
   recordPandoc,
   replaceAsync,
   getCached,
-  pluginNamesFromUrl,
+  getAllPluginNamesForRepo,
 };

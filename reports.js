@@ -1,7 +1,7 @@
 /* eslint-env node */
 const axios = require('./axios');
 const {getPullRequests} = require('./graphql.js');
-const {getCached, pluginNamesFromUrl} = require('./utils.js');
+const {getCached, getAllPluginNamesForRepo} = require('./utils.js');
 
 const docsUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 
@@ -101,7 +101,7 @@ async function getPullMap(column, repoToPlugins) {
   for (const edge of column.node.cards.edges) {
     const {url} = edge.node.content;
     if (url) {
-      const pluginNames = pluginNamesFromUrl(url, repoToPlugins);
+      const pluginNames = getAllPluginNamesForRepo(url, repoToPlugins);
       pluginNames.forEach(function(pluginName) {
         projectToPull[pluginName] = url;
       });

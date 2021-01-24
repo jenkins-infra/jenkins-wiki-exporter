@@ -51,16 +51,12 @@ describe('reports', function() {
     beforeAll( async () => {
       this.reportData = await pluginsReport();
     });
-    it('should mark android-lint as deprecated', () => {
+    it('should mark multiple-scms as deprecated', () => {
       expect(this.reportData.plugins.find(
-          (plugin) => plugin.name == 'android-lint',
-      )).toEqual({
-        'className': 'success',
-        'installs': '3670',
-        'name': 'android-lint',
-        'status': 'deprecated',
-        'url': 'https://wiki.jenkins-ci.org/display/JENKINS/Android+Lint+Plugin',
-      });
+          (plugin) => plugin.name == 'multiple-scms',
+      )['labels']).toEqual([
+        'deprecated', 'scm',
+      ]);
     });
     it('have all the statuses ', () => {
       expect(this.reportData.statuses).toHaveProperty('ok');

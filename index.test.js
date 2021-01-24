@@ -1,4 +1,6 @@
 /* eslint-env node, jest */
+process.env.CONFLUENCE_USERNAME = process.env.CONFLUENCE_PASSWORD = 'fake';
+
 const sut = require('./index.js');
 const MockExpressRequest = require('mock-express-request');
 const MockExpressResponse = require('mock-express-response');

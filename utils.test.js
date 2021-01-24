@@ -35,8 +35,8 @@ describe('utils', function() {
     expect(checkUrl(['wiki.jenkins.io'], 'https://wiki.jenkins.io/something')).toBe(true);
   });
   it('replaceConfluenceContent', () => {
-    const input = fs.readFileSync('test-data/with-classes.html', 'utf8');
-    const expected = fs.readFileSync('test-data/with-classes-removed.html', 'utf8');
+    const input = fs.readFileSync('test-data/with-classes.html', 'utf8').trim();
+    const expected = fs.readFileSync('test-data/with-classes-removed.html', 'utf8').trim();
     expect(replaceConfluenceContent(input)).toBe(expected);
   });
   describe.each([

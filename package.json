@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/jenkins-infra/jenkins-wiki-exporter#readme",
   "dependencies": {
-    "@sentry/node": "^5.29.2",
+    "@sentry/node": "^6.1.0",
     "archiver": "^5.1.0",
     "axios": "^0.21.1",
     "bunyan": "^1.8.14",

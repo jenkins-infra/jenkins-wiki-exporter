@@ -33,7 +33,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-bunyan-logger": "^1.3.3",
-    "graphql-request": "^1.8.2",
+    "graphql-request": "^2.0.0",
     "http-errors": "^1.8.0",
     "talkback": "^2.4.2",
     "xml2js": "^0.4.23"

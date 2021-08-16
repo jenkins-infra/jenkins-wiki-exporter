@@ -1,5 +1,6 @@
 /* eslint-env node */
 const {GraphQLClient} = require('graphql-request');
+require('cross-fetch/polyfill');
 
 const getPullRequestsQuery = `
 query getPullRequests($login: String!) {

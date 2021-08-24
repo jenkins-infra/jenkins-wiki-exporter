@@ -11,6 +11,7 @@
         <thead class="thead-dark">
           <th data-field="name" data-sortable="true">Plugin Name</th>
           <th data-field="status" data-sortable="true">Status</th>
+          <th data-field="releaseDate" data-sortable="true">Last release</th>
           <th data-field="installs" data-sortable="true">Installs</th>
         </thead>
       <% plugins.forEach(function(plugin) { %>
@@ -24,6 +25,10 @@
             <a href="<%= plugin.action %>">
               <%= plugin.status %>
             </a>
+          </td>
+          
+          <td>
+            <%= plugin.releaseDate %>
           </td>
           <td>
             <%= plugin.installs %>

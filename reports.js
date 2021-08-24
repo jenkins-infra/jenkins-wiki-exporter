@@ -2,6 +2,7 @@
 const axios = require('./axios');
 const {getPullRequests} = require('./graphql.js');
 const {getCached, getAllPluginNamesForRepo} = require('./utils.js');
+const moment = require('moment');
 
 const docsUrl = 'http://updates.jenkins.io/plugin-documentation-urls.json';
 
@@ -23,13 +24,15 @@ async function pluginsReport() {
     const url = documentation[key].url || '';
     plugin.name = key;
     plugin.installs = plugin.popularity || 0;
+    plugin.releaseDate = moment(plugin.releaseTimestamp).format('YYYY-MM-DD');
     if (url.match('https?://github.com/jenkinsci/')) {
       plugin.status = 'OK';
       plugin.className = 'success';
       if (pulls['merged'][key]) {
         recent.push(key);
       }
-    } else if (plugin.labels.indexOf('deprecated') >= 0) {
+    } else if (plugin.labels.includes('deprecated') ||
+        Object.keys(uc.deprecations).includes(plugin.name)) {
       plugin.status = 'deprecated';
       plugin.className = 'success';
     } else if (pulls['merged'][key]) {

@@ -102,13 +102,17 @@ async function getPulls(plugins) {
 async function getPullMap(column, repoToPlugins) {
   const projectToPull = {};
   for (const edge of column.node.cards.edges) {
-    const {url} = edge.node.content;
-    if (url) {
-      const pluginNames = getAllPluginNamesForRepo(url, repoToPlugins);
-      pluginNames.forEach(function(pluginName) {
-        projectToPull[pluginName] = url;
-      });
+    if (!edge.node.content) {
+      continue;
     }
+    if (!edge.node.content.url) {
+      continue;
+    }
+    const {url} = edge.node.content;
+    const pluginNames = getAllPluginNamesForRepo(url, repoToPlugins);
+    pluginNames.forEach(function(pluginName) {
+      projectToPull[pluginName] = url;
+    });
   }
   return projectToPull;
 }

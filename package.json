@@ -37,7 +37,7 @@
     "graphql": "^15.5.1",
     "graphql-request": "^3.5.0",
     "http-errors": "^1.8.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "talkback": "^2.4.2",
     "xml2js": "^0.4.23"
   },
